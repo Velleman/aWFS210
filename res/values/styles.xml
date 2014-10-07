@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+        <item name="android:dropDownListViewStyle">@style/TestSpinnerStyle</item>
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:dropDownListViewStyle">@style/TestSpinnerStyle</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="CustomTheme" parent="@style/FullscreenTheme">
+        <item name="android:dropDownListViewStyle">@style/TestSpinnerStyle</item>
+        <item name="android:listViewStyle">@style/myListView</item>
+        <item name="android:alertDialogStyle">@style/myListView</item>
+    </style>
+
+    <style name="myListView" parent="@android:style/Widget.ListView.Menu">
+        <item name="android:divider">#5e5e5e</item>
+        <item name="android:dividerHeight">5dp</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+    
+     <style name="myAlertDialog">
+        <item name="android:divider">#5e5e5e</item>
+        <item name="android:dividerHeight">5dp</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="TestSpinnerStyle" parent="@android:style/Widget.ListView.DropDown">
+        <item name="android:divider">#5e5e5e</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="SelectedStyle">
+        <item name="android:textColor">#FF0000</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="NotSelectedStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="LargeText">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+</resources>

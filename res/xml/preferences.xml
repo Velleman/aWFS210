@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:defaultValue="TEST"
+        android:key="WIFINAME"
+        android:summary="This will set the name of the wifi scope"
+        android:title="Name of the wifi scope" />
+    <EditTextPreference
+        android:defaultValue="4"
+        android:key="WIFICHANNEL"
+        android:summary="This will set the channel of the wifi scope"
+        android:title="channel of the wifi scope" />
+    <EditTextPreference
+        android:defaultValue=""
+        android:key="WIFIPASSWORD"
+        android:summary="This will set the password of the wifi scope  (currently disabled)"
+        android:title="password of the wifi scope (DISABLED)" />
+
+    <CheckBoxPreference
+        android:key="DEMO"
+        android:summary="When checked the demo mode is running.\r\nIn this mode you can not connect to the wifi scope"
+        android:title="DEMO MODE" />
+
+    <Preference
+        android:key="CALIBRATE"
+        android:title="Click to calibrate the scope" />
+    <Preference
+        android:key="VERSIONNUMBERSCOPE"
+        android:title="Click to exit" />
+    <Preference
+        android:key="VERSIONNUMBERWIFI"
+        android:title="Click to exit" />
+
+</PreferenceScreen>

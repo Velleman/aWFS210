@@ -1,0 +1,36 @@
+/*
+	private void calcSinus() {
+
+		for (int i = 0; i < tableVerticesWithTriangles.length * 0.50f; i++) {
+			if (i >= (tableVerticesWithTriangles.length * 0.25f)) {
+				tableVerticesWithTriangles[i] = (float) (((i - (tableVerticesWithTriangles.length * 0.5f)) / (tableVerticesWithTriangles.length * 0.25f)) + 1);
+			} else {
+				tableVerticesWithTriangles[i] = (float) ((i - (tableVerticesWithTriangles.length * 0.25f)) / ((tableVerticesWithTriangles.length * 0.25f)));
+			}
+
+			i++;
+			tableVerticesWithTriangles[i] = (float) (Math
+					.sin(i
+							* ((2 * Math.PI) / (tableVerticesWithTriangles.length / 4))));
+
+		}
+	}
+
+	private void calcSquare() {
+
+		for (int i = (tableVerticesWithTriangles.length / 2); i < tableVerticesWithTriangles.length - 1; i++) {
+			if (i >= tableVerticesWithTriangles.length * 0.75) {
+				tableVerticesWithTriangles[i] = (float) ((i - tableVerticesWithTriangles.length)
+						/ (tableVerticesWithTriangles.length * 0.25f) + 1);
+			} else {
+				tableVerticesWithTriangles[i] = (float) ((i - (tableVerticesWithTriangles.length * 0.75f)) / ((tableVerticesWithTriangles.length * 0.25f)));
+			}
+
+			i++;
+			tableVerticesWithTriangles[i] = (float) (Math
+					.signum((double) Math
+							.sin(i
+									* ((2 * Math.PI) / (tableVerticesWithTriangles.length / 4)))));
+
+		}
+	}*/
