@@ -1309,7 +1309,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 	public void connected()
 	{
 
-		showToast("Connected");
+		
 		if (!isDemo)
 		{
 			if (!connector.isReceiving)
@@ -1335,8 +1335,10 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 
 			scope.requestWifiSettings();
 			enableButtons();
+			showToast("Connected");
 		} else
 		{
+			showToast("Demo Mode");
 			enableButtons();
 			scope.updateSettings();
 			calculator.startCalculating();

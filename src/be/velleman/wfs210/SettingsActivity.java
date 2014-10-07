@@ -34,11 +34,6 @@ public class SettingsActivity extends PreferenceActivity
 		wifiName.setDefaultValue(sp
 				.getString("WIFINAME", "No scope name found"));
 
-		EditTextPreference wifiPassword = (EditTextPreference) getPreferenceManager()
-				.findPreference("WIFIPASSWORD");
-		wifiPassword.setDefaultValue(sp
-				.getString("WIFIPASSWORD", "No scope password found"));
-
 		Preference button = (Preference) getPreferenceManager()
 				.findPreference("CALIBRATE");
 		if (button != null)
