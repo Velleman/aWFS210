@@ -74,37 +74,8 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			SettingsPacket.setData(7, channel2.getVerticalPosition());
 			SettingsPacket.setData(8, timeBase.ordinal());
 			SettingsPacket.setData(9, (byte) triggerSettings.getTriggerLevel());
-			if (previousAutoRange == false)
-			{
-				if (triggerSettings.getAutorange())
-				{
-					SettingsPacket
-							.setData(10, generateTriggerSettings(triggerSettings));
-					previousAutoRange = true;
-				} else
-				{
-					SettingsPacket
-							.setData(10, generateTriggerSettings(triggerSettings));
-
-				}
-			} else
-			{
-				if (triggerSettings.getAutorange())
-				{
-					triggerSettings.setAutorange(false);
-					SettingsPacket
-							.setData(10, generateTriggerSettings(triggerSettings));
-					previousAutoRange = false;
-				} else
-				{
-					SettingsPacket
-							.setData(10, generateTriggerSettings(triggerSettings));
-					previousAutoRange = false;
-				}
-			}
-
+			SettingsPacket.setData(10, generateTriggerSettings(triggerSettings));
 			SettingsPacket.finalize();
-
 			connector.send(SettingsPacket);
 			return true;
 		} catch (IOException e)
@@ -438,11 +409,13 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		}
 
 		//samples
-		byte[] sampleCH1 = new byte[(1042 - 18) / 2];
-		byte[] sampleCH2 = new byte[(1042 - 18) / 2];
+		
 		if (currentPacket.getCommand() == Commands.RECEIVE_SAMPLES_FROM_SCOPE
 				.getValue())
 		{
+			int samplesSize = (1042 - 18) / 2;
+			byte[] sampleCH1 = new byte[samplesSize];
+			byte[] sampleCH2 = new byte[samplesSize];
 			byte offSetHigh, offSetLow;
 			int offSet;
 			offSetLow = currentPacket.getData(0);
@@ -528,7 +501,6 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 				}
 
 			}
-			//Log.i(TAG, Integer.toString(offSet));
 
 			System.arraycopy(sampleCH1, 0, channel1.getSamples(), offSet, (length - 18) / 2);
 			System.arraycopy(sampleCH2, 0, channel2.getSamples(), offSet, (length - 18) / 2);
@@ -537,13 +509,6 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 				channel1.isNewData = true;
 				channel2.isNewData = true;
 			}
-			//channel1.setSampleData(offSet, sampleCH1);
-			//channel2.setSampleData(offSet, sampleCH2);
-			/*
-			 * if (this.TotalData == offSet) { this.TotalData += 512; if
-			 * (this.TotalData >= totalSamples) { newFrame(); this.TotalData =
-			 * 0; } } else this.TotalData = 0;
-			 */
 			if (isFakeData)
 			{
 				isFakeData = false;

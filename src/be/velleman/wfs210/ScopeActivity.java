@@ -820,10 +820,19 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			public void onClick(View v)
 			{
 				// TODO Auto-generated method stub
-				if (!scope.triggerSettings.getAutorange())
-					scope.triggerSettings.setAutorange(true);
-				else
-					scope.triggerSettings.setAutorange(false);
+				
+				if(scope.channel1.getVerticalDiv() == VoltageDiv.off)
+				{
+					scope.channel1.setVerticalDiv(VoltageDiv.VDIV_20V);
+					scope.sendSettings();
+				}
+				if(scope.channel2.getVerticalDiv() == VoltageDiv.off)
+				{
+					scope.channel2.setVerticalDiv(VoltageDiv.VDIV_20V);
+					scope.sendSettings();
+				}
+				boolean autorange = !scope.triggerSettings.getAutorange();
+				scope.triggerSettings.setAutorange(autorange);
 				if (!scope.sendSettings())
 				{
 					alertUser("Could not send command");
