@@ -22,7 +22,7 @@ public class FakeWFS210 extends WFS210
 		triggerSettings
 				.setManual_Triggering(ManualTriggering.NO_MANUAL_TRIGGERING);
 		triggerSettings
-				.setRestart_Triggering(RestartTriggering.RESTART_TRIGGERING.NO_RESTART);
+				.setRestart_Triggering(RestartTriggering.NO_RESTART);
 		triggerSettings.setRun_Hold(false);
 		triggerSettings.setTrigger_Channel(TriggerChannel.CH1);
 		triggerSettings.setTrigger_Mode(TriggerMode.AUTO);
@@ -73,6 +73,7 @@ public class FakeWFS210 extends WFS210
 				Random rand = new Random(1337);
 				while (true)
 				{
+					
 					if (!triggerSettings.getRun_Hold())
 					{
 						byte[] fakeSquare = new byte[(int) 4096];
@@ -110,7 +111,6 @@ public class FakeWFS210 extends WFS210
 							fakeSinus[i] = (byte) data;
 						}
 						channel2.setSampleData(0, fakeSinus);
-						channel2.isNewData = true;
 						max = 0;
 						min = 0;
 						for (int i = 0; i < totalSamples - 1; i++)
@@ -148,9 +148,18 @@ public class FakeWFS210 extends WFS210
 							fakeSquare[i] = (byte) data;
 						}
 						channel1.setSampleData(0, fakeSquare);
-						channel1.isNewData = true;
+						isNewData = true;
+						newDataFrame();
 					}
-
+					try {
+						synchronized(this)
+						{
+							this.wait(200);
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 			}

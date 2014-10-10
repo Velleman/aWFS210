@@ -6,17 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import android.R.bool;
+import android.util.Log;
 
 public class OsciCalculator
 {
 	Boolean isRunning = false;
 	WFS210 scope;
 	MyGLRenderer renderer;
-	Map<String, String> measurements = new HashMap<String, String>();
-	private List<WFS210MeasurementsListener> measurementsListeners = new ArrayList<WFS210MeasurementsListener>();
 	Timer timer;
 	float Vdc1 = 0;
 	float Vdc2 = 0;
@@ -50,91 +47,10 @@ public class OsciCalculator
 	float Freq = 0;
 	Boolean validSignals = false;
 
-	public OsciCalculator(WFS210 scope2, MyGLRenderer rend)
+	public OsciCalculator(WFS210 scope, MyGLRenderer rend)
 	{
-		scope = scope2;
-		renderer = rend;
-	}
-
-	public void addMeasurementsListener(WFS210MeasurementsListener wml)
-	{
-		measurementsListeners.add(wml);
-	}
-
-	public void notifyUpdatedMeasurements(Map<String, String> measurements)
-	{
-		for (WFS210MeasurementsListener wml : measurementsListeners)
-		{
-			wml.updatedMeasurements();
-		}
-	}
-
-	/**
-	 * Calculates every measurement every second and sending it to the specified
-	 * handler
-	 * 
-	 * @param h
-	 *            the handler which is used to send the measurements to
-	 */
-	public void startCalculating()
-	{
-		if (!isRunning)
-		{
-
-			isRunning = true;
-			timer = new Timer("Calc-Timer");
-
-			timer.scheduleAtFixedRate(new TimerTask()
-			{
-
-				@Override
-				public void run()
-				{
-					// Your database code here
-
-					if (ValidateSignals())
-					{
-						validSignals = true;
-						Vdc1 = calculateVdc(scope.getChannel1());
-						Vdc2 = calculateVdc(scope.getChannel2());
-						RMS1 = calculateRms(scope.getChannel1());
-						RMS2 = calculateRms(scope.getChannel2());
-						Vmax1 = calculateVMax(scope.getChannel1());
-						Vmax2 = calculateVMax(scope.getChannel2());
-						Vmin1 = calculateVMin(scope.getChannel1());
-						Vmin2 = calculateVMin(scope.getChannel2());
-						Vpkpk1 = Math.abs(Vmax1) + Math.abs(Vmin1);
-						Vpkpk2 = Math.abs(Vmax2) + Math.abs(Vmin2);
-						TRMS1 = calculateTRms(scope.getChannel1());
-						TRMS2 = calculateTRms(scope.getChannel2());
-						dbM1 = calculateDb(RMS1);
-						dbM2 = calculateDb(RMS2);
-						W1rms2 = RMS1 * (RMS1 / 2);
-						W1rms4 = RMS1 * (RMS1 / 4);
-						W1rms8 = RMS1 * (RMS1 / 8);
-						W1rms16 = RMS1 * (RMS1 / 16);
-						W1rms32 = RMS1 * (RMS1 / 32);
-						W2rms2 = RMS1 * (RMS1 / 2);
-						W2rms4 = RMS1 * (RMS1 / 4);
-						W2rms8 = RMS1 * (RMS1 / 8);
-						W2rms16 = RMS1 * (RMS1 / 16);
-						W2rms32 = RMS1 * (RMS1 / 32);
-						dbGain = dbM2 - dbM1;
-					} else
-						validSignals = false;
-					if (renderer != null && renderer.yMarker1 != null)
-					{
-						calculateDV(renderer.yMarker1.getPosition().y, renderer.yMarker2
-								.getPosition().y);
-						calculateTime(renderer.xMarker1.getPosition().x, renderer.xMarker2
-								.getPosition().x);
-					}
-					notifyUpdatedMeasurements(measurements);
-
-				}
-			}, 500, 500);
-		}
-
+		this.scope = scope;
+		this.renderer = rend;
 	}
 
 	/**
@@ -176,8 +92,9 @@ public class OsciCalculator
 	 *            and 0dBm(0.775V)
 	 * @return Retuns the calculated ratio
 	 */
-	public float calculateDb(float Vrms)
+	public float calculateDb(Channel channel)
 	{
+		float Vrms = calculateRms(channel);
 		float db = 0;
 		db = (float) (20 * Math.log10((Vrms / 0.775)));
 		return db;
@@ -321,21 +238,15 @@ public class OsciCalculator
 		return result;
 	}
 
-	public void calculateDV(float y1, float y2)
+	private float calculateDV(float y1, float y2,Channel channel)
 	{
-
+		float result;
 		float difference;
-		float volt2 = (scope.getChannel2().getIsX10() ? 10 : 1) * scope
-				.getFloatFromVoltageDiv(scope.getChannel2());
-		float volt1 = (scope.getChannel1().getIsX10() ? 10 : 1) * scope
-				.getFloatFromVoltageDiv(scope.getChannel1());
+		float volt = (channel.getIsX10() ? 10 : 1) * scope
+				.getFloatFromVoltageDiv(channel);
 		difference = Math.abs(y1 - y2);
-		float difference1 = (scope.getFloatFromVoltageDiv(scope.getChannel1())/25.5f) * difference;
-		float difference2 = (scope.getFloatFromVoltageDiv(scope.getChannel2())/25.5f) * difference;
-		dV1 = difference1;
-
-		dV2 = difference2;
-
+		result = (volt/25.5f) * difference;
+		return result;
 	}
 
 	/**
@@ -346,19 +257,22 @@ public class OsciCalculator
 	 */
 	public void calculateTime(float x1, float x2)
 	{
+		calculateDT(x1,x2);
+		Freq = 1 / dt;
+	}
+	
+	/**
+	 * Calculates the time between the 2 XMarkers and sends it to the activity
+	 * 
+	 * @param difference
+	 *            value between 2 markers
+	 */
+	public void calculateDT(float x1, float x2)
+	{
 		float fTimebase = scope.getFloatFromTimeBase();
 		float totaltime = fTimebase * scope.totalDivisions;
 		float timePerSample = totaltime / scope.totalSamples;
 		dt = timePerSample * Math.abs(x2 - x1);
-		Freq = 1 / dt;
-	}
-
-	public void stopCalculating()
-	{
-		if (timer != null)
-		{
-
-		}
 	}
 
 	public void setScope(WFS210 newScope)
@@ -366,293 +280,100 @@ public class OsciCalculator
 		scope = newScope;
 	}
 
-	public void clearListners(WFS210MeasurementsListener wml)
+	public String getVdc(Channel channel)
 	{
-		measurementsListeners.remove(wml);
-	}
-
-	private Boolean ValidateSignals()
-	{
-		Boolean status = true;
-		for (byte b : scope.getChannel1().getSamples())
-		{
-			int i = unsignedToBytes(b);
-			if (i <= 3)
-				status = false;
-			if (i >= 252)
-				status = false;
-		}
-		for (byte b : scope.getChannel2().getSamples())
-		{
-			int i = unsignedToBytes(b);
-			if (i <= 3)
-				status = false;
-			if (i >= 252)
-				status = false;
-		}
-
-		return status;
-	}
-
-	public String getVdc1()
-	{
-		if (validSignals)
-		{
-			return fmt(Vdc1) + "V";
-		}
-		return "???";
-
+			return fmt(calculateVdc(channel)) + "V";
 	}
 	
-	public String getVdc2()
+	public String getRMS(Channel channel)
 	{
-		if (validSignals)
-		{
-			return fmt(Vdc2) + "V";
-		}
-		return "???";
-
-	}
-	
-	public String getRMS1()
-	{
-		if (validSignals)
-		{
-			return fmt(RMS1) + "V";
-		}
-		return "???";
-
-	}
-
-	public String getRMS2()
-	{
-		if (validSignals)
-		{
-			return fmt(RMS2) + "V";
-		}
-		return "???";
-	}
-
-	public String getTRMS1()
-	{
-		if (validSignals)
-		{
-			return fmt(TRMS1) + "V";
-		}
-		return "???";
-	}
-
-	public String getTRMS2()
-	{
-		if (validSignals)
-		{
-			return fmt(TRMS2) + "V";
-		}
-		return "???";
-	}
-
-	public String getVmax1()
-	{
-		if (validSignals)
-		{
-			return fmt(Vmax1) + "V";
-		}
-		return "???";
-	}
-
-	public String getVmax2()
-	{
-		if (validSignals)
-		{
-			return fmt(Vmax2) + "V";
-		}
-		return "???";
-	}
-
-	public String getVmin1()
-	{
-		if (validSignals)
-		{
-			return fmt(Vmin1) + "V";
-		}
-		return "???";
-	}
-
-	public String getVmin2()
-	{
-		if (validSignals)
-		{
-			return fmt(Vmin2) + "V";
-		}
-		return "???";
-	}
-
-	public String getVpkpk1()
-	{
-		if (validSignals)
-		{
-			return fmt(Vpkpk1) + "V";
-		}
-		return "???";
-	}
-
-	public String getVpkpk2()
-	{
-		if (validSignals)
-		{
-			return fmt(Vpkpk2)+"V";
-		}
-		return "???";
-	}
-
-	public String getDbM1()
-	{
-		if (validSignals)
-		{
-			return fmt(dbM1) + "dB";
-		}
-		return "???";
-	}
-
-	public String getDbM2()
-	{
-		if (validSignals)
-		{
-			return fmt(dbM2) + "dB";
-		}
-		return "???";
-	}
-
-	public String getDbGain()
-	{
-		if (validSignals)
-		{
-			return fmt(dbGain) + "dB";
-		}
-		return "???";
-	}
-
-	public String getW1rms2()
-	{
-		if (validSignals)
-		{
-			return fmt(W1rms2) + "V";
-		}
-		return "???";
-	}
-
-	public String getW1rms4()
-	{
-		if (validSignals)
-		{
-			return fmt(W1rms4) + "V";
-		}
-		return "???";
-	}
-
-	public String getW1rms8()
-	{
-		if (validSignals)
-		{
-			return fmt(W1rms8) + "V";
-		}
-		return "???";
-	}
-
-	public String getW1rms16()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms16) + "V";
-		}
-		return "???";
-	}
-
-	public String getW1rms32()
-	{
-		if (validSignals)
-		{
-			return fmt(W1rms32) + "V";
-		}
-		return "???";
-	}
-
-	public String getW2rms2()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms2) + "V";
-		}
-		return "???";
-	}
-
-	public String getW2rms4()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms4) + "V";
-		}
-		return "???";
-	}
-
-	public String getW2rms8()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms8) + "V";
-		} 
-		return "???";
-	}
-
-	public String getW2rms16()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms16) + "V";
-		}
-		return "???";
-	}
-
-	public String getW2rms32()
-	{
-		if (validSignals)
-		{
-			return fmt(W2rms32) + "V";
-		}
-		return "???";
-	}
-
-	public String getdV1()
-	{
-		if(dV1 >= 1)
-		{
-			String format = String.format("%.2f",dV1);
-			return " "+format+"V";
-		}
-		else
-		{
-			return fmt(dV1*1000)+"mV";
-		}
+		
+			return fmt(calculateRms(channel)) + "V";
+		
 		
 
 	}
 
-	public String getdV2()
+	public String getTRMS(Channel channel)
 	{
-		if(dV2 >= 1)
+		
+			return fmt(calculateTRms(channel)) + "V";
+		
+		
+	}
+
+	public String getVmax(Channel channel)
+	{
+		
+			return fmt(calculateVMax(channel)) + "V";
+		
+		
+	}
+
+	public String getVmin(Channel channel)
+	{
+		
+			return fmt(calculateVMin(channel)) + "V";
+		
+		
+	}
+
+	public String getVpkpk(Channel channel)
+	{
+		
+			float Vptp = Math.abs(calculateVMax(channel)) + Math.abs(calculateVMin(channel));
+			return fmt(Vptp) + "V";
+		
+		
+	}
+
+	public String getDbM(Channel channel)
+	{
+		
+			return fmt(calculateDb(channel)) + "dB";
+		
+	}
+
+	public String getDbGain(Channel channel1,Channel channel2)
+	{
+		
+			return fmt(calculateDb(channel2) - calculateDb(channel1)) + "dB";
+		
+	}
+
+	public String getWrms(Channel channel, int watt)
+	{
+		
+			float rms = calculateRms(channel);
+			return fmt(rms * (rms/watt)) + "W";
+		
+	}
+
+	public String getdV(float y1, float y2,Channel channel)
+	{
+		float dv = calculateDV(y1, y2,channel);
+		if(dv >= 1)
 		{
-			String format = String.format("%.2f",dV2);
+			String format = String.format("%.2f",dv);
 			return " "+format+"V";
 		}
 		else
 		{
-			return fmt(dV2*1000)+"mV";
+			return fmt(dv*1000)+"mV";
 		}
-
 	}
 
 	public String getdt()
 	{
+		try
+		{
+		calculateDT(renderer.xMarker1.getPosition().x, renderer.xMarker2
+				.getPosition().x);
+		}
+		catch(Exception e)
+		{
+			
+		}
 		if (dt >= 1)
 		{
 			return String.format("%.2f", dt) + " s";
@@ -665,7 +386,7 @@ public class OsciCalculator
 			{
 				if (dt > 0.000001 && dt <= 0.000999)
 				{
-					return String.format("%.2f", dt * 1000000) + " Î¼s";
+					return String.format("%.2f", dt * 1000000) + " µs";
 				}
 			}
 		}
@@ -675,7 +396,8 @@ public class OsciCalculator
 
 	public String getFreq()
 	{
-
+		calculateDT(renderer.xMarker1.getPosition().x, renderer.xMarker2
+				.getPosition().x);
 		float freq = 1 / dt;
 		if (freq <= 1000000)
 		{

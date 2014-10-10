@@ -1,21 +1,18 @@
 package be.velleman.wfs210;
 
-import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glLineWidth;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.invertM;
 import static android.opengl.Matrix.multiplyMV;
 import static android.opengl.Matrix.orthoM;
-import be.velleman.wfs210.Constants;
-import be.velleman.wfs210.Trigger.TriggerMode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,15 +26,14 @@ import objects.XMeasureMarker;
 import objects.YMeasureMarker;
 import objects.YPositionMarker;
 import objects.YTriggerLevelMarker;
-
 import programs.ClipColorShaderProgram;
 import programs.ColorShaderProgram;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
+import be.velleman.wfs210.Trigger.TriggerMode;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer
 {
@@ -61,7 +57,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer
 	Line scrollLine = new Line();
 	public DeviceProperties dp = new DeviceProperties();
 	List<UpdatedMarkerListener> updatedMarkerListeners = new ArrayList<UpdatedMarkerListener>();
-	private Map<String, String> markerscalculations = new HashMap<String, String>();
 	float precentageview;
 	List<NewFrameListener> newFrameListeners = new ArrayList<NewFrameListener>();
 

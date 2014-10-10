@@ -15,19 +15,20 @@
  */
 package be.velleman.wfs210;
 
-import java.security.spec.MGF1ParameterSpec;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import be.velleman.wfs210.Trigger.TriggerMode;
 import android.content.Context;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.WindowManager;
+import be.velleman.wfs210.Trigger.TriggerMode;
 
 /**
  * A view container where OpenGL ES graphics can be drawn on screen. This view
@@ -90,6 +91,16 @@ public class MyGLSurfaceView extends GLSurfaceView
 	}
 
 	private Boolean isLeft = false;
+	
+	@SuppressWarnings("unused")
+	private final GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener(){
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+		{
+			Log.i("Scroll", "scrolling");
+			return true;
+		}
+	};
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
@@ -171,6 +182,7 @@ public class MyGLSurfaceView extends GLSurfaceView
 						isScaling = false;
 						startScale = false;
 						scope.updateScaleData(false, false, isLeft);
+						scope.triggerSettings.setAutorange(false);
 						scope.sendSettings();
 					}
 				}
@@ -221,7 +233,7 @@ public class MyGLSurfaceView extends GLSurfaceView
 					;
 				while (!(scope.connector.isConnected & scope.getHasSettings()))
 					;
-				if (scope.getChannel1().isNewData || scope.isFakeData || (scope
+				if (scope.isNewData || scope.isFakeData || (scope
 						.getTriggerSettings().getTrigger_Mode().ordinal() == TriggerMode.ONCE
 						.ordinal()) || (scope.getTriggerSettings()
 						.getTrigger_Mode().ordinal() == TriggerMode.NORMAL
@@ -443,6 +455,8 @@ public class MyGLSurfaceView extends GLSurfaceView
 
 			return true;
 		}
+		
+		
 	}
 
 }

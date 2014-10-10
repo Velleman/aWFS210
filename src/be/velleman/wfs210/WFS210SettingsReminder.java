@@ -3,13 +3,6 @@ package be.velleman.wfs210;
 import java.util.HashMap;
 import java.util.Map;
 
-import be.velleman.wfs210.Channel.InputCoupling;
-import be.velleman.wfs210.Trigger.ManualTriggering;
-import be.velleman.wfs210.Trigger.RestartTriggering;
-import be.velleman.wfs210.Trigger.TriggerChannel;
-import be.velleman.wfs210.Trigger.TriggerMode;
-import be.velleman.wfs210.Trigger.TriggerSlope;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

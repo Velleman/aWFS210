@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.hardware.Camera.Size;
 import be.velleman.wfs210.Channel.InputCoupling;
 import be.velleman.wfs210.Trigger.ManualTriggering;
 import be.velleman.wfs210.Trigger.RestartTriggering;
@@ -19,10 +18,8 @@ import be.velleman.wfs210.Trigger.TriggerSlope;
 
 public class RealWFS210 extends WFS210 implements ConnectionListener
 {
-
 	private Map<String, String> wifiSettings = new HashMap<String, String>();
-	private Boolean previousAutoRange = false;
-
+	
 	@Override
 	public Trigger getTriggerSettings()
 	{
@@ -216,8 +213,6 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	static int i = 0;
 	private Boolean isCalibrating = false;
 	private byte previousstatus = 10;
-	private int TotalData = 0;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -508,6 +503,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			{
 				channel1.isNewData = true;
 				channel2.isNewData = true;
+				isNewData = true;
+				newDataFrame();
+				
 			}
 			if (isFakeData)
 			{
@@ -564,14 +562,14 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	public Boolean sendWifiSettings(String wifiName, String wifiChannel)
 	{
 
-		Packet sendWifiSettings = new Packet(74);
-		sendWifiSettings.setCommand(Commands.SEND_WIFI_SETTINGS);
-		sendWifiSettings.setData(2, Integer.decode(wifiChannel));
+		Packet WifiSettings = new Packet(74);
+		WifiSettings.setCommand(Commands.SEND_WIFI_SETTINGS);
+		WifiSettings.setData(2, 0);
 		char[] data = wifiName.toCharArray();
 		int i = 4;
 		for (char c : data)
 		{
-			sendWifiSettings.setData(i, c);
+			WifiSettings.setData(i, c);
 			i++;
 		}
 
@@ -579,14 +577,14 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		i = 36;
 		for (char c : data)
 		{
-			sendWifiSettings.setData(i, c);
+			WifiSettings.setData(i, c);
 			i++;
 		}
 
-		sendWifiSettings.finalize();
+		WifiSettings.finalize();
 		try
 		{
-			connector.send(sendWifiSettings);
+			connector.send(WifiSettings);
 		} catch (IOException e)
 		{
 			// TODO Auto-generated catch block

@@ -33,10 +33,9 @@ public abstract class Connector
 
 	public void notifyDisconnectListeners()
 	{
-		for (ConnectionListener dl : connectionListeners)
-		{
-			dl.disconnected();
-		}
+		
+		for(int i =0;i < connectionListeners.size(); i++)
+			connectionListeners.get(i).disconnected();
 	}
 
 	public void notifyNewPacket(Packet p)

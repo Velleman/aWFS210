@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import be.velleman.wfs210.Channel.InputCoupling;
-
 import be.velleman.wfs210.Trigger.TriggerChannel;
 import be.velleman.wfs210.Trigger.TriggerMode;
 import be.velleman.wfs210.Trigger.TriggerSlope;
@@ -15,6 +14,7 @@ public abstract class WFS210
 {
 	protected Channel channel1;
 	protected Channel channel2;
+	public boolean isNewData;
 	protected TimeBase timeBase;
 	protected Trigger triggerSettings;
 	protected Connector connector;
@@ -27,7 +27,7 @@ public abstract class WFS210
 	{ 0, 2, 2.5f, 2, 2, 2, 2.5f, 2, 2, 2, 2.5f, 2 };
 	float[] timeArray = new float[]
 	{ 2, 2.5f, 2, 2, 2.5f, 2, 2, 2.5f, 2, 2, 2.5f, 2, 2, 2.5f, 2, 2, 2.5f, 2 };
-	List<NewFrameListener> newFrameListeners = new ArrayList<NewFrameListener>();
+	List<NewDataFrameListener> newDataFrameListeners = new ArrayList<NewDataFrameListener>();
 	Boolean hasSettings = false;
 
 	public Boolean getHasSettings()
@@ -40,21 +40,21 @@ public abstract class WFS210
 		this.hasSettings = hasSettings;
 	}
 
-	public void addNewFrameListener(NewFrameListener nfl)
+	public void addNewDataFrameListener(NewDataFrameListener nfl)
 	{
-		newFrameListeners.add(nfl);
+		newDataFrameListeners.add(nfl);
 	}
 
-	public void removeNewFrameListener(NewFrameListener nfl)
+	public void removeNewDataFrameListener(NewDataFrameListener nfl)
 	{
-		newFrameListeners.remove(nfl);
+		newDataFrameListeners.remove(nfl);
 	}
 
-	public void newFrame()
+	public void newDataFrame()
 	{
-		for (NewFrameListener nfl : newFrameListeners)
+		for (NewDataFrameListener ndfl : newDataFrameListeners)
 		{
-			nfl.newFrame();
+			ndfl.newDataFrame();
 		}
 	}
 
@@ -85,17 +85,18 @@ public abstract class WFS210
 
 	public void notifyUpdatedSettings(Map<String, String> settings)
 	{
-		for (ScopeDataChangedListener sdcl : scopeDataChangedListeners)
+		for(int i = 0;i < scopeDataChangedListeners.size();i++)
 		{
-			sdcl.updatedSettings(settings);
+			scopeDataChangedListeners.get(i).updatedSettings(settings);
 		}
+		
 	}
 
 	public void notifyUpdatedWifiSettings(Map<String, String> settings)
 	{
-		for (ScopeDataChangedListener sdcl : scopeDataChangedListeners)
+		for(int i = 0;i < scopeDataChangedListeners.size();i++)
 		{
-			sdcl.updatedWifiSettings(settings);
+			scopeDataChangedListeners.get(i).updatedWifiSettings(settings);
 		}
 	}
 
