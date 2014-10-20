@@ -111,6 +111,13 @@ public class TCPConnector extends Connector
 						isReceiveRunning = false;
 						isReceiving = false;
 					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						notifyDisconnectListeners();
+						isReceiveRunning = false;
+						isReceiving = false;
+					}
 
 				}
 			};

@@ -12,7 +12,6 @@ public class Channel
 	private int verticalPosition;
 	private byte[] samples = new byte[4096];
 	public Boolean isNewData = false;
-
 	private Boolean isX10 = false;
 
 	/**
@@ -23,10 +22,24 @@ public class Channel
 		super();
 		for (int i = 0; i <= samples.length - 1; i++)
 		{
-			this.samples[i] = 0;
+			samples[i] = 0;
 		}
 	}
 
+	public boolean isOverFlow()
+	{
+		for(int i =0;i< samples.length;i++)
+		{
+			int value = samples[i] & (0xff);
+			if(value >= 252 || value <= 3)
+			{
+				return true;
+			}
+		}
+		return false;
+	
+	}
+	
 	public int getVerticalPosition()
 	{
 		return verticalPosition;
@@ -98,9 +111,13 @@ public class Channel
 		for (int i = offSet; i <= length + offSet; i++)
 		{
 			if (i - offSet == 0)
+			{
 				this.samples[i] = data[i - offSet];
+			}
 			else
+			{
 				this.samples[i] = data[i - offSet - 1];
+			}
 
 		}
 		if (offSet >= 2048)
@@ -146,7 +163,14 @@ public class Channel
 	{
 		return this.samples;
 	}
-
+	
+	public void clearSamples()
+	{
+		for(int i =0; i < samples.length; i++)
+		{
+			samples[i] = 0;
+		}
+	}
 	enum InputCoupling
 	{
 		AC, DC, GND

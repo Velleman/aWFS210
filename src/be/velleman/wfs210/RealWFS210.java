@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.util.Log;
 import be.velleman.wfs210.Channel.InputCoupling;
 import be.velleman.wfs210.Trigger.ManualTriggering;
 import be.velleman.wfs210.Trigger.RestartTriggering;
@@ -230,7 +231,8 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		if (currentPacket.getCommand() == Commands.RECEIVE_SCOPE_SETTINGS
 				.getValue())
 		{
-
+			channel1.clearSamples();
+			channel2.clearSamples();
 			channel1.setInputCoupling(InputCoupling.values()[currentPacket
 					.getData(2)]);
 			if (channel1.getInputCoupling() == InputCoupling.AC)
@@ -505,7 +507,6 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 				channel2.isNewData = true;
 				isNewData = true;
 				newDataFrame();
-				
 			}
 			if (isFakeData)
 			{
@@ -531,7 +532,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			wifiSettings
 					.put("SCOPEVERSION", getScopeBuildNumber(currentPacket));
 			notifyUpdatedWifiSettings(wifiSettings);
-
+			Log.i("WFS210_WIFISETTINGS", "new wifisettings received");
 		}
 
 	}
@@ -564,7 +565,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 
 		Packet WifiSettings = new Packet(74);
 		WifiSettings.setCommand(Commands.SEND_WIFI_SETTINGS);
-		WifiSettings.setData(2, 0);
+		WifiSettings.setData(2, 1);
 		char[] data = wifiName.toCharArray();
 		int i = 4;
 		for (char c : data)

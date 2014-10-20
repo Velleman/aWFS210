@@ -51,8 +51,7 @@
         <item>W RMS8</item>
         <item>W RMS16</item>
         <item>W RMS32</item>
-        <item>Dbm1</item>
-        <item>Dbm2</item>
+        <item>Dbm</item>
         <item>DbGain</item>
     </string-array>
 

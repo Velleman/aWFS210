@@ -1,6 +1,7 @@
 package be.velleman.wfs210;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -33,9 +34,11 @@ public class PrefsFragment extends PreferenceFragment {
 				{
 					SharedPreferences sp = getPreferenceManager().getSharedPreferences();
 					Preference p = pc.getPreference(0);
-					p.setSummary(sp.getString("VERSIONNUMBERSCOPE", ""));
+					p.setSummary(sp.getString("VERSIONNUMBERSCOPE", "SCOPE VERSION NOT FOUND"));
 					Preference p2 = pc.getPreference(1);
-					p2.setSummary(sp.getString("VERSIONNUMBERWIFI", ""));
+					p2.setSummary(sp.getString("VERSIONNUMBERWIFI", "WIFI VERSION NOT FOUND"));
+					Preference p3 = pc.getPreference(2); 
+					p3.setSummary(sp.getString("APPVERSION", "APP VERSION NOT FOUND"));
 				}
 				if(pc.getTitle().toString().contentEquals("Settings"))
 				{

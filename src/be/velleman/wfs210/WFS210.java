@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import be.velleman.wfs210.Channel.InputCoupling;
+import be.velleman.wfs210.Trigger.ManualTriggering;
+import be.velleman.wfs210.Trigger.RestartTriggering;
 import be.velleman.wfs210.Trigger.TriggerChannel;
 import be.velleman.wfs210.Trigger.TriggerMode;
 import be.velleman.wfs210.Trigger.TriggerSlope;
@@ -670,6 +672,34 @@ public abstract class WFS210
 		if (data.equals("5mV"))
 			ch.setVerticalDiv(VoltageDiv.VDIV_5mV);
 
+	}
+	
+	public void LoadDefaultSettings()
+	{
+		channel1 = new Channel("CH1");
+		channel2 = new Channel("CH2");
+		triggerSettings = new Trigger();
+		triggerSettings.setAutorange(false);
+		triggerSettings
+				.setManual_Triggering(ManualTriggering.NO_MANUAL_TRIGGERING);
+		triggerSettings
+				.setRestart_Triggering(RestartTriggering.NO_RESTART);
+		triggerSettings.setRun_Hold(false);
+		triggerSettings.setTrigger_Channel(TriggerChannel.CH1);
+		triggerSettings.setTrigger_Mode(TriggerMode.AUTO);
+		triggerSettings.setTrigger_Slope(TriggerSlope.FALLING_EDGE);
+		triggerSettings.setTriggerLevel(64);
+		channel1.setInputCoupling(InputCoupling.AC);
+		channel1.setIsX10(false);
+		channel1.setVerticalDiv(VoltageDiv.VDIV_200mV);
+		channel1.setVerticalPosition(128);
+		channel2.setInputCoupling(InputCoupling.AC);
+		channel2.setIsX10(false);
+		channel2.setVerticalDiv(VoltageDiv.VDIV_200mV);
+		channel2.setVerticalPosition(128);
+		timeBase = TimeBase.HDIV_1mS;
+		selectedChannel = channel1;
+		hasSettings = true;
 	}
 
 }

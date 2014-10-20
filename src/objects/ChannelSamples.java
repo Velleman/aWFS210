@@ -97,38 +97,6 @@ public class ChannelSamples
 		for (int i = 0; i <= length - 1; i++)
 		{
 			if (scope != null && scope.getTimeBase() != null)
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 			{
 				if (scope.getTimeBase().ordinal() == TimeBase.HDIV_1uS
 						.ordinal())

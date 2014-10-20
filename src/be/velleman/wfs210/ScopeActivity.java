@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.AnimationDrawable;
@@ -141,8 +142,10 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 
 		if (sp.getBoolean("DEMO", false)) {
 			if (scope instanceof RealWFS210) { // Demo check if current scope is
-												// a Real One if yes change to						// Fake one.
+												// a Real One if yes change to
+												// // Fake one.
 				LoadFakeWFS210();
+				scope.updateSettings();
 			}
 		} else {
 			if (scope instanceof FakeWFS210) {
@@ -210,6 +213,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		mGLView.setZOrderMediaOverlay(true);
 
 		if (sp.getBoolean("DEMO", false)) {
+
 			LoadFakeWFS210();
 		} else {
 			LoadRealWFS210();
@@ -275,7 +279,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel1().setInputCoupling(InputCoupling.AC);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -287,7 +291,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel1().setInputCoupling(InputCoupling.DC);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -299,7 +303,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel1().setInputCoupling(InputCoupling.GND);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -317,7 +321,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 					setViewBackground(Probe1, R.drawable.buttongreen);
 				}
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -347,7 +351,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel2().setInputCoupling(InputCoupling.AC);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -359,7 +363,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel2().setInputCoupling(InputCoupling.DC);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -372,7 +376,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getChannel2().setInputCoupling(InputCoupling.GND);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -390,7 +394,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 					setViewBackground(Probe2, R.drawable.buttonyellow);
 				}
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -408,7 +412,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				scope.getTriggerSettings().setTrigger_Channel(
 						TriggerChannel.CH1);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -422,7 +426,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				scope.getTriggerSettings().setTrigger_Channel(
 						TriggerChannel.CH2);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -435,7 +439,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getTriggerSettings().setTrigger_Mode(TriggerMode.NORMAL);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -448,7 +452,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getTriggerSettings().setTrigger_Mode(TriggerMode.AUTO);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -461,7 +465,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				// TODO Auto-generated method stub
 				scope.getTriggerSettings().setTrigger_Mode(TriggerMode.ONCE);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -478,7 +482,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 					scope.getTriggerSettings().setRun_Hold(true);
 				}
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -492,7 +496,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				scope.getTriggerSettings().setTrigger_Slope(
 						TriggerSlope.FALLING_EDGE);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -506,7 +510,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				scope.getTriggerSettings().setTrigger_Slope(
 						TriggerSlope.RISING_EDGE);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -517,6 +521,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				scope.requestWifiSettings();
 				Intent intent = new Intent();
 				intent.setClass(ScopeActivity.this, SetPreferenceActivity.class);
 				startActivityForResult(intent, 0);
@@ -535,7 +540,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 									.getVerticalDiv().ordinal() - 1));
 					scope.triggerSettings.setAutorange(false);
 					if (!scope.sendSettings()) {
-						alertUser("Could not send command");
+						alertUser("Could not send command",Toast.LENGTH_SHORT);
 					}
 				}
 
@@ -555,7 +560,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 									.getVerticalDiv().ordinal() + 1));
 					scope.triggerSettings.setAutorange(false);
 					if (!scope.sendSettings()) {
-						alertUser("Could not send command");
+						alertUser("Could not send command",Toast.LENGTH_SHORT);
 					}
 				}
 
@@ -575,11 +580,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 										.getVerticalDiv().ordinal() - 1));
 						scope.triggerSettings.setAutorange(false);
 						if (!scope.sendSettings()) {
-							alertUser("Could not send command");
+							alertUser("Could not send command",Toast.LENGTH_SHORT);
 						}
 					}
 				} catch (Exception e) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -599,11 +604,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 										.getVerticalDiv().ordinal() + 1));
 						scope.triggerSettings.setAutorange(false);
 						if (!scope.sendSettings()) {
-							alertUser("Could not send command");
+							alertUser("Could not send command",Toast.LENGTH_SHORT);
 						}
 					}
 				} catch (Exception e) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -623,11 +628,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 								.getTimeBase().ordinal() + 1));
 						scope.triggerSettings.setAutorange(false);
 						if (!scope.sendSettings()) {
-							alertUser("Could not send command");
+							alertUser("Could not send command",Toast.LENGTH_SHORT);
 						}
 					}
 				} catch (Exception e) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -645,11 +650,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 								.getTimeBase().ordinal() - 1));
 						scope.triggerSettings.setAutorange(false);
 						if (!scope.sendSettings()) {
-							alertUser("Could not send command");
+							alertUser("Could not send command",Toast.LENGTH_SHORT);
 						}
 					}
 				} catch (Exception e) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 
 			}
@@ -673,7 +678,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				boolean autorange = !scope.triggerSettings.getAutorange();
 				scope.triggerSettings.setAutorange(autorange);
 				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
+					alertUser("Could not send command",Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -798,8 +803,19 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			mGLView.startUpdatingData();
 			scope.requestWifiSettings();
 		}
-
+		Editor edit = sp.edit();
+		try {
+			edit.putString(
+					"APPVERSION",
+					getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			edit.commit();
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		mGLView.getRenderer().addUpdatedMarkersListener(this);
+		scope.updateSettings();
+		
 	}
 
 	public boolean isOnline() {
@@ -898,28 +914,40 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 	@Override
 	public void disconnected() {
 		// TODO Auto-generated method stub
+		try
+		{
 		showToast("Disconnected");
 		if (connector.isConnected)
 			connector.close();
 		LoadFakeWFS210();
+		scope.updateSettings();
+		}
+		catch(Exception e)
+		{
+			Log.e("Disconnect", "failed to disconnect");
+			LoadFakeWFS210();
+			scope.updateSettings();
+		}
 	}
 
 	private void LoadRealWFS210() {
 		connector = new TCPConnector("169.254.1.1", 2000);
 		connector.addConnectionListener(this);
-		if(scope != null)
+		if (scope != null)
 			scope.removeNewDataFrameListener(this);
 		scope = new RealWFS210(connector);
 		scope.selectedChannel = scope.getChannel1();
+		scope.LoadDefaultSettings();
 		mGLView.setScope(scope);
 		reminder = new WFS210SettingsReminder(getApplicationContext());
 		scope.addScopeDataChangedListener(this);
 		scope.addScopeDataChangedListener(reminder);
 		isDemo = false;
 		connector.open();
-		scope.requestWifiSettings();
 		scope.addNewDataFrameListener(this);
 		calculator = new OsciCalculator(scope, mGLView.getRenderer());
+		scope.requestWifiSettings();
+		
 	}
 
 	private void LoadFakeWFS210() {
@@ -929,19 +957,18 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			connector = null;
 		}
 		fakeConnector = new FakeConnector();
-		if(scope != null)
+		if (scope != null)
 			scope.removeNewDataFrameListener(this);
 		scope = null;
 		scope = new FakeWFS210(fakeConnector);
 		scope.selectedChannel = scope.getChannel1();
+		scope.LoadDefaultSettings();
 		mGLView.setScope(scope);
 		fakeConnector.open();
 		isDemo = true;
 		scope.addScopeDataChangedListener(this);
 		scope.addNewDataFrameListener(this);
-		scope.generateFakeSignals();
-		if(calculator == null)
-		{
+		if (calculator == null) {
 			calculator = new OsciCalculator(scope, mGLView.getRenderer());
 		}
 		SharedPreferences sp = PreferenceManager
@@ -949,7 +976,9 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		SharedPreferences.Editor editor = sp.edit();
 		editor.putBoolean("DEMO", true);
 		editor.commit();
-		
+		scope.LoadDefaultSettings();
+		scope.generateFakeSignals();
+		scope.requestWifiSettings();
 	}
 
 	private void disableViews(ViewGroup vg) {
@@ -1107,31 +1136,14 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			if (!connector.isReceiving) {
 				connector.startReceivingPackets();
 			}
-			if (reminder.hasSettings()) {
-				restoreSettings(scope);
-				scope.updateSettings();
-				if (!scope.sendSettings()) {
-					alertUser("Could not send command");
-				}
-				scope.requestSettings();
-
-			} else {
-				scope.requestSettings();
-			}
-
+			scope.requestSettings();
 			scope.requestWifiSettings();
 			enableButtons();
 			showToast("Connected");
 		} else {
 			showToast("Demo Mode");
 			enableButtons();
-			scope.updateSettings();
-			
 		}
-	}
-
-	private void restoreSettings(WFS210 newScope) {
-		newScope.setSettingByMap(reminder.getWFS210Settings());
 	}
 
 	private void enableButtons() {
@@ -1189,66 +1201,66 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				default:
 					break;
 				}
-				switch (SelectedItemChannel1) {
-				case 0:
-					Measurement1.setText("Vdc1:\n"
-							+ calculator.getVdc(scope.channel1));
-					break;
-				case 1:
-					Measurement1.setText("RMS1:\n"
-							+ calculator.getRMS(scope.channel1));
-					break;
-				case 2:
-					Measurement1.setText("Trms1:\n"
-							+ calculator.getTRMS(scope.channel1));
-					break;
-				case 3:
-					Measurement1.setText("Vptp1:\n"
-							+ calculator.getVpkpk(scope.channel1));
-					break;
-				case 4:
-					Measurement1.setText("VMAX1:\n"
-							+ calculator.getVmax(scope.channel1));
-					break;
-				case 5:
-					Measurement1.setText("VMIN1:\n"
-							+ calculator.getVmin(scope.channel1));
-					break;
-				case 6:
-					Measurement1.setText("RMS1 2W:\n"
-							+ calculator.getWrms(scope.channel1, 2));
-					break;
-				case 7:
-					Measurement1.setText("RMS1 4W:\n"
-							+ calculator.getWrms(scope.channel1, 4));
-					break;
-				case 8:
-					Measurement1.setText("RMS1 8W:\n"
-							+ calculator.getWrms(scope.channel1, 8));
-					break;
-				case 9:
-					Measurement1.setText("RMS1 16W:\n"
-							+ calculator.getWrms(scope.channel1, 16));
-					break;
-				case 10:
-					Measurement1.setText("RMS1 32W:\n"
-							+ calculator.getWrms(scope.channel1, 32));
-					break;
-				case 11:
-					Measurement1.setText("Dbm1:\n"
-							+ calculator.getDbM(scope.channel1));
-					break;
-				case 12:
-					Measurement1.setText("Dbm2:\n"
-							+ calculator.getDbM(scope.channel2));
-					break;
-				case 13:
-					Measurement1.setText("DbGain:\n"
-							+ calculator.getDbGain(scope.channel1,
-									scope.channel2));
-					break;
-				default:
-					break;
+				if (scope.channel1.isOverFlow()) {
+					Measurement1.setText("--");
+				} else {
+					switch (SelectedItemChannel1) {
+					case 0:
+						Measurement1.setText("Vdc:\n"
+								+ calculator.getVdc(scope.channel1));
+						break;
+					case 1:
+						Measurement1.setText("rms:\n"
+								+ calculator.getRMS(scope.channel1));
+						break;
+					case 2:
+						Measurement1.setText("Trms:\n"
+								+ calculator.getTRMS(scope.channel1));
+						break;
+					case 3:
+						Measurement1.setText("Vpp:\n"
+								+ calculator.getVpkpk(scope.channel1));
+						break;
+					case 4:
+						Measurement1.setText("VMax:\n"
+								+ calculator.getVmax(scope.channel1));
+						break;
+					case 5:
+						Measurement1.setText("VMin:\n"
+								+ calculator.getVmin(scope.channel1));
+						break;
+					case 6:
+						Measurement1.setText("rms 2W:\n"
+								+ calculator.getWrms(scope.channel1, 2));
+						break;
+					case 7:
+						Measurement1.setText("rms 4W:\n"
+								+ calculator.getWrms(scope.channel1, 4));
+						break;
+					case 8:
+						Measurement1.setText("rms 8W:\n"
+								+ calculator.getWrms(scope.channel1, 8));
+						break;
+					case 9:
+						Measurement1.setText("rms 16W:\n"
+								+ calculator.getWrms(scope.channel1, 16));
+						break;
+					case 10:
+						Measurement1.setText("rms 32W:\n"
+								+ calculator.getWrms(scope.channel1, 32));
+						break;
+					case 11:
+						Measurement1.setText("Dbm:\n"
+								+ calculator.getDbM(scope.channel1));
+						break;
+					case 12:
+						Measurement1.setText("DbGain:\n"
+								+ calculator.getDbGain(scope.channel1,
+										scope.channel2));
+						break;
+					default:
+						break;
+					}
 				}
 				switch (SelectedMarkerItemChannel2) {
 				case 0:
@@ -1281,66 +1293,68 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 				default:
 					break;
 				}
-				switch (SelectedItemChannel2) {
-				case 0:
-					Measurement2.setText("Vdc2:\n"
-							+ calculator.getVdc(scope.channel2));
-					break;
-				case 1:
-					Measurement2.setText("RMS2:\n"
-							+ calculator.getRMS(scope.channel2));
-					break;
-				case 2:
-					Measurement2.setText("Trms2:\n"
-							+ calculator.getTRMS(scope.channel2));
-					break;
-				case 3:
-					Measurement2.setText("Vptp2:\n"
-							+ calculator.getVpkpk(scope.channel2));
-					break;
-				case 4:
-					Measurement2.setText("VMAX2:\n"
-							+ calculator.getVmax(scope.channel2));
-					break;
-				case 5:
-					Measurement2.setText("VMIN2:\n"
-							+ calculator.getVmin(scope.channel2));
-					break;
-				case 6:
-					Measurement2.setText("RMS2 2W:\n"
-							+ calculator.getWrms(scope.channel2, 2));
-					break;
-				case 7:
-					Measurement2.setText("RMS2 4W:\n"
-							+ calculator.getWrms(scope.channel2, 4));
-					break;
-				case 8:
-					Measurement2.setText("RMS2 8W:\n"
-							+ calculator.getWrms(scope.channel2, 8));
-					break;
-				case 9:
-					Measurement2.setText("RMS2 16W:\n"
-							+ calculator.getWrms(scope.channel2, 16));
-					break;
-				case 10:
-					Measurement2.setText("RMS2 32W:\n"
-							+ calculator.getWrms(scope.channel2, 32));
-					break;
-				case 11:
-					Measurement2.setText("dBm1:\n"
-							+ calculator.getDbM(scope.channel1));
-					break;
-				case 12:
-					Measurement2.setText("dBm2:\n"
-							+ calculator.getDbM(scope.channel2));
-					break;
-				case 13:
-					Measurement2.setText("dBGain:\n"
-							+ calculator.getDbGain(scope.channel1,
-									scope.channel2));
-					break;
-				default:
-					break;
+				if (scope.channel2.isOverFlow()) {
+					Measurement2.setText("--");
+				}
+				else
+				{
+					switch (SelectedItemChannel2) {
+					case 0:
+						Measurement2.setText("Vdc:\n"
+								+ calculator.getVdc(scope.channel2));
+						break;
+					case 1:
+						Measurement2.setText("rms:\n"
+								+ calculator.getRMS(scope.channel2));
+						break;
+					case 2:
+						Measurement2.setText("Trms:\n"
+								+ calculator.getTRMS(scope.channel2));
+						break;
+					case 3:
+						Measurement2.setText("Vpp:\n"
+								+ calculator.getVpkpk(scope.channel2));
+						break;
+					case 4:
+						Measurement2.setText("VMax:\n"
+								+ calculator.getVmax(scope.channel2));
+						break;
+					case 5:
+						Measurement2.setText("VMin:\n"
+								+ calculator.getVmin(scope.channel2));
+						break;
+					case 6:
+						Measurement2.setText("rms 2W:\n"
+								+ calculator.getWrms(scope.channel2, 2));
+						break;
+					case 7:
+						Measurement2.setText("rms 4W:\n"
+								+ calculator.getWrms(scope.channel2, 4));
+						break;
+					case 8:
+						Measurement2.setText("rms 8W:\n"
+								+ calculator.getWrms(scope.channel2, 8));
+						break;
+					case 9:
+						Measurement2.setText("rms 16W:\n"
+								+ calculator.getWrms(scope.channel2, 16));
+						break;
+					case 10:
+						Measurement2.setText("rms 32W:\n"
+								+ calculator.getWrms(scope.channel2, 32));
+						break;
+					case 11:
+						Measurement2.setText("dBm:\n"
+								+ calculator.getDbM(scope.channel2));
+						break;
+					case 12:
+						Measurement2.setText("dBGain:\n"
+								+ calculator.getDbGain(scope.channel1,
+										scope.channel2));
+						break;
+					default:
+						break;
+					}
 				}
 
 			}
@@ -1354,11 +1368,16 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		final Map<String, String> settings = settingsMap;
 		this.runOnUiThread(new Runnable() {
 			public void run() {
+				if (settings.get("VDIV1") == "off")
+					VoltageDiv1.setText(settings.get("VDIV1"));
+				else
+					VoltageDiv1.setText(settings.get("VDIV1") + "/div");
+				timeBase.setText(settings.get("TIMEBASE") + "/div");
 
-				VoltageDiv1.setText(settings.get("VDIV1") + "/DIV");
-				txtVoltTimeSetting.setText(settings.get("VDIV2") + "/DIV");
-				VoltageDiv2.setText(settings.get("VDIV2") + "/DIV");
-				timeBase.setText(settings.get("TIMEBASE") + "/DIV");
+				if (settings.get("VDIV2") == "off")
+					VoltageDiv2.setText(settings.get("VDIV2"));
+				else
+					VoltageDiv2.setText(settings.get("VDIV2") + "/div");
 
 				if (scope.getChannel1().getIsX10())
 					setViewBackground(Probe1, R.drawable.buttongreen);
@@ -1473,11 +1492,19 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 							} else {
 								if (scope.selectedChannel == scope
 										.getChannel1()) {
-									txtVoltTimeSetting.setText("Volts/Div"
-											+ settings.get("VDIV1"));
+									if (settings.get("VDIV1") != "off")
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV1") + "/div");
+									else
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV1"));
 								} else {
-									txtVoltTimeSetting.setText("Volts/Div"
-											+ settings.get("VDIV2"));
+									if (settings.get("VDIV2") != "off")
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV2") + "/div");
+									else
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV2"));
 								}
 							}
 							txtVoltTimeSetting.setVisibility(View.VISIBLE);
@@ -1499,11 +1526,19 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 							} else {
 								if (scope.selectedChannel == scope
 										.getChannel1()) {
-									txtVoltTimeSetting.setText("Volts/Div"
-											+ settings.get("VDIV1"));
+									if (settings.get("VDIV1") != "off")
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV1") + "/div");
+									else
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV1"));
 								} else {
-									txtVoltTimeSetting.setText("Volts/Div"
-											+ settings.get("VDIV2"));
+									if (settings.get("VDIV2") != "off")
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV2") + "/div");
+									else
+										txtVoltTimeSetting.setText(settings
+												.get("VDIV2"));
 								}
 							}
 							txtVoltTimeSetting.setVisibility(View.VISIBLE);
@@ -1576,7 +1611,8 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 	@Override
 	public void updatedWifiSettings(Map<String, String> wifiSettings) {
 		// TODO Auto-generated method stub
-		SharedPreferences sp = getSharedPreferences("SETTINGS", 0);
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
 		Editor editor = sp.edit();
 		String wifiversion = wifiSettings.get("WIFIVERSION");
 		editor.putString("VERSIONNUMBERWIFI", wifiversion);
@@ -1593,11 +1629,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		markersInfo = markerinfo;
 	}
 
-	private void alertUser(final String text) {
+	private void alertUser(final String text,final int duration) {
 		this.runOnUiThread(new Runnable() {
 			public void run() {
 				Toast.makeText(getApplicationContext(), text,
-						Toast.LENGTH_SHORT).show();
+						duration).show();
 			}
 		});
 	}

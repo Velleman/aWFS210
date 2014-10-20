@@ -1,5 +1,7 @@
 package be.velleman.wfs210;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import be.velleman.wfs210.Channel.InputCoupling;
@@ -14,33 +16,8 @@ public class FakeWFS210 extends WFS210
 
 	public FakeWFS210(Connector fakeConnector)
 	{
-		// TODO Auto-generated constructor stub
-		channel1 = new Channel("CH1");
-		channel2 = new Channel("CH2");
-		triggerSettings = new Trigger();
-		triggerSettings.setAutorange(false);
-		triggerSettings
-				.setManual_Triggering(ManualTriggering.NO_MANUAL_TRIGGERING);
-		triggerSettings
-				.setRestart_Triggering(RestartTriggering.NO_RESTART);
-		triggerSettings.setRun_Hold(false);
-		triggerSettings.setTrigger_Channel(TriggerChannel.CH1);
-		triggerSettings.setTrigger_Mode(TriggerMode.AUTO);
-		triggerSettings.setTrigger_Slope(TriggerSlope.FALLING_EDGE);
-		triggerSettings.setTriggerLevel(64);
-		channel1.setInputCoupling(InputCoupling.AC);
-		channel1.setIsX10(false);
-		channel1.setVerticalDiv(VoltageDiv.VDIV_200mV);
-		channel1.setVerticalPosition(128);
-		channel2.setInputCoupling(InputCoupling.AC);
-		channel2.setIsX10(false);
-		channel2.setVerticalDiv(VoltageDiv.VDIV_200mV);
-		channel2.setVerticalPosition(128);
-		timeBase = TimeBase.HDIV_1mS;
 		isFakeData = true;
-		updateSettings();
 		connector = fakeConnector;
-		hasSettings = true;
 	}
 
 	@Override
@@ -262,6 +239,13 @@ public class FakeWFS210 extends WFS210
 	Boolean requestWifiSettings()
 	{
 		// TODO Auto-generated method stub
+		Map<String,String> wifiSettings = new HashMap<String,String>();
+		wifiSettings.put("WIFICHANNEL", "DEMO");
+		wifiSettings.put("WIFINAME", "DEMO");
+		wifiSettings.put("WIFIPASSWORD", "DEMO");
+		wifiSettings.put("WIFIVERSION", "DEMO");
+		wifiSettings.put("SCOPEVERSION", "DEMO");
+		notifyUpdatedWifiSettings(wifiSettings);
 		return true;
 	}
 }

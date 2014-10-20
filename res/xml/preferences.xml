@@ -27,5 +27,9 @@
         android:key="VERSIONNUMBERWIFI"
         android:title="Wifi Firmware Version" 
         android:summary=""/>
+    <Preference
+        android:key="APPVERSION"
+        android:title="App Version" 
+        android:summary=""/>
 </PreferenceCategory>
 </PreferenceScreen>
