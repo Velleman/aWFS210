@@ -252,7 +252,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		// Initiate wifi service manager
 		mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		if (!mainWifi.isWifiEnabled()) {
-			showToast("Wifi is not enabled, it will be enabled NOW");
+			alertUser("Wifi is not enabled, it will be enabled NOW",Toast.LENGTH_LONG);
 			mainWifi.setWifiEnabled(true);
 			mainWifi.startScan();
 		}
@@ -786,23 +786,6 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		currentWifiName = sp.getString("WIFINAME", "unknown");
 		currentWifiChannel = sp.getString("WIFICHANNEL", "unknown");
 		currentWifiPassword = sp.getString("WIFIPASSWORD", "unknown");
-		scope.addScopeDataChangedListener(this);
-		scope.addScopeDataChangedListener(reminder);
-		if (isDemo) {
-			if (fakeConnector != null)
-				fakeConnector.addConnectionListener(this);
-			fakeConnector.open();
-			scope.generateFakeSignals();
-			mGLView.setScope(scope);
-			mGLView.startUpdatingData();
-		} else {
-			if (connector != null)
-				connector.addConnectionListener(this);
-			connector.open();
-			mGLView.setScope(scope);
-			mGLView.startUpdatingData();
-			scope.requestWifiSettings();
-		}
 		Editor edit = sp.edit();
 		try {
 			edit.putString(
@@ -813,6 +796,7 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		mGLView.startUpdatingData();
 		mGLView.getRenderer().addUpdatedMarkersListener(this);
 		scope.updateSettings();
 		
@@ -901,22 +885,12 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		return dir.delete();
 	}
 
-	private void showToast(final String msg) {
-		this.runOnUiThread(new Runnable() {
-			public void run() {
-				// Your code here
-				Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
-			}
-		});
-
-	}
-
 	@Override
 	public void disconnected() {
 		// TODO Auto-generated method stub
 		try
 		{
-		showToast("Disconnected");
+		alertUser("Disconnected",Toast.LENGTH_SHORT);
 		if (connector.isConnected)
 			connector.close();
 		LoadFakeWFS210();
@@ -935,6 +909,10 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		connector.addConnectionListener(this);
 		if (scope != null)
 			scope.removeNewDataFrameListener(this);
+		if(scope instanceof FakeWFS210)
+		{
+			((FakeWFS210) scope).StopGeneratingFakeSignals();
+		}
 		scope = new RealWFS210(connector);
 		scope.selectedChannel = scope.getChannel1();
 		scope.LoadDefaultSettings();
@@ -947,7 +925,11 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		scope.addNewDataFrameListener(this);
 		calculator = new OsciCalculator(scope, mGLView.getRenderer());
 		scope.requestWifiSettings();
-		
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putBoolean("DEMO", false);
+		editor.commit();
 	}
 
 	private void LoadFakeWFS210() {
@@ -957,15 +939,21 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			connector = null;
 		}
 		fakeConnector = new FakeConnector();
+		fakeConnector.addConnectionListener(this);
 		if (scope != null)
 			scope.removeNewDataFrameListener(this);
+		if(scope instanceof FakeWFS210)
+		{
+			((FakeWFS210) scope).StopGeneratingFakeSignals();
+		}
 		scope = null;
 		scope = new FakeWFS210(fakeConnector);
 		scope.selectedChannel = scope.getChannel1();
 		scope.LoadDefaultSettings();
 		mGLView.setScope(scope);
-		fakeConnector.open();
+		fakeConnector.addConnectionListener(this);
 		isDemo = true;
+		fakeConnector.open();
 		scope.addScopeDataChangedListener(this);
 		scope.addNewDataFrameListener(this);
 		if (calculator == null) {
@@ -977,7 +965,6 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 		editor.putBoolean("DEMO", true);
 		editor.commit();
 		scope.LoadDefaultSettings();
-		scope.generateFakeSignals();
 		scope.requestWifiSettings();
 	}
 
@@ -1139,10 +1126,13 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 			scope.requestSettings();
 			scope.requestWifiSettings();
 			enableButtons();
-			showToast("Connected");
+			scope.updateSettings();
+			alertUser("Connected",Toast.LENGTH_SHORT);
 		} else {
-			showToast("Demo Mode");
+			alertUser("Demo Mode",Toast.LENGTH_SHORT);
+			scope.generateFakeSignals();
 			enableButtons();
+			scope.updateSettings();
 		}
 	}
 

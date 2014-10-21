@@ -290,7 +290,7 @@ public class MyGLSurfaceView extends GLSurfaceView
 
 			}
 
-		}, 33, 33);
+		}, 0, 33);
 
 	}
 

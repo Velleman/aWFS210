@@ -522,6 +522,14 @@ public abstract class WFS210
 		{
 			settings.put("HOLD", "FALSE");
 		}
+		if(triggerSettings.getAutorange())
+		{
+			settings.put("AUTORANGE", "TRUE");
+		}
+		else
+		{
+			settings.put("AUTORANGE","FALSE");
+		}
 		notifyUpdatedSettings(settings);
 	}
 
@@ -687,7 +695,7 @@ public abstract class WFS210
 		triggerSettings.setRun_Hold(false);
 		triggerSettings.setTrigger_Channel(TriggerChannel.CH1);
 		triggerSettings.setTrigger_Mode(TriggerMode.AUTO);
-		triggerSettings.setTrigger_Slope(TriggerSlope.FALLING_EDGE);
+		triggerSettings.setTrigger_Slope(TriggerSlope.RISING_EDGE);
 		triggerSettings.setTriggerLevel(64);
 		channel1.setInputCoupling(InputCoupling.AC);
 		channel1.setIsX10(false);

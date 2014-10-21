@@ -8,14 +8,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * @author bn
  * 
  */
 
-public class TCPConnector extends Connector
-{
+public class TCPConnector extends Connector {
 
 	private static final String TAG = "WFS210-TCPConnector";
 	int iPoort;
@@ -27,16 +27,13 @@ public class TCPConnector extends Connector
 	Boolean isReceiving = false;
 	Context context;
 
-	public TCPConnector(String ip, int poort)
-	{
+	public TCPConnector(String ip, int poort) {
 
 		this.ip = ip;
-		try
-		{
+		try {
 			InetAddress[] inetarray = InetAddress.getAllByName(ip);
 			oIP = inetarray[0];
-		} catch (UnknownHostException e)
-		{
+		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -52,72 +49,51 @@ public class TCPConnector extends Connector
 	 * red.
 	 * 
 	 */
-	public void startReceivingPackets()
-	{
+	public void startReceivingPackets() {
 
-		if (!isReceiveRunning)
-		{
+		if (!isReceiveRunning) {
 			isReceiveRunning = true;
-			Thread receiveWorker = new Thread("Receiving Thread")
-			{
-				public void run()
-				{
+			Thread receiveWorker = new Thread("Receiving Thread") {
+				public void run() {
 
-					try
-					{
+					try {
 						byte[] buffer = new byte[4096];
 
 						Packet foundPacket = null;
 						int Count = 0;
 						isReceiving = true;
-						while (isReceiveRunning)
-						{
-							if (socket != null)
-							{
+						while (isReceiveRunning) {
+							if (socket != null) {
 								Count = iStream.read(buffer);
-								if (Count > 0)
-								{
-									//Log.i(TAG,Integer.toString(iStream.available()));								
-									parser.addDataToParse(buffer, Count); // try adding Data							
+								if (Count > 0) {
+									parser.addDataToParse(buffer, Count); 
 									System.currentTimeMillis();
 									foundPacket = parser.parseNext();
-									while (foundPacket != null)
-									{
-										//send foundPacket;
-										//Log.i(TAG,"Packet Found");									
+									while (foundPacket != null) {
 										notifyNewPacket(foundPacket);
-
 										foundPacket = parser.parseNext();
 									}
 									System.currentTimeMillis();
-								} else
-								{
+								} else {
 									notifyDisconnectListeners();
 									isReceiveRunning = false;
-
 								}
-							} else
-							{
+							} else {
 								isReceiveRunning = false;
-
 							}
-
 						}
 						isReceiving = false;
-					} catch (IOException error)
-					{
-						error.printStackTrace();
-						notifyDisconnectListeners();
+					} catch (IOException error) {
+						Log.e(TAG,"IOException startReceivingPackets");
+						close();
 						isReceiveRunning = false;
 						isReceiving = false;
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-						notifyDisconnectListeners();
+					} /*catch (Exception e) {
+						Log.e(TAG,"Exception startReceivingPackets");
+						close();
 						isReceiveRunning = false;
 						isReceiving = false;
-					}
+					}*/
 
 				}
 			};
@@ -126,32 +102,25 @@ public class TCPConnector extends Connector
 	}
 
 	@Override
-	public void open()
-	{
-		Thread worker1 = new Thread("Connection Init")
-		{
-			public void run()
-			{
-				try
-				{
+	public void open() {
+		Thread worker1 = new Thread("Connection Init") {
+			public void run() {
+				try {
 					socket = new Socket(ip, iPoort);
 					socket.setTcpNoDelay(true);
-
-					while (!socket.isConnected())
-						;
-					//ShowToast("Connected");
+					while (!socket.isConnected());
 					isConnected = true;
 					oStream = socket.getOutputStream();
 					iStream = new BufferedInputStream(socket.getInputStream());
 					notifyConnectListeners();
-				} catch (IOException e)
-				{
-					//ShowToast("Connecting Failed - Please Connect to Wifi from the wifi scope");
-					//Close();
-					//Log.d(TAG, e.toString());
-				} catch (Exception e)
-				{
-					//Close();
+				} catch (IOException e) {
+					Log.e(TAG,"IOException open");
+					e.printStackTrace();
+					close();
+				} catch (Exception e) {
+					Log.e(TAG,"Exception open");
+					e.printStackTrace(); 
+					close();
 				}
 			}
 		};
@@ -160,16 +129,13 @@ public class TCPConnector extends Connector
 	}
 
 	@Override
-	public void close()
-	{
-		try
-		{
+	public void close() {
+		try {
 			if (socket != null)
 				socket.close();
-		} catch (IOException e)
-		{
-
+		} catch (IOException e) {
 			e.printStackTrace();
+			Log.i(TAG,"Failed to properly close the socket");
 		}
 		socket = null;
 		iStream = null;
@@ -179,26 +145,17 @@ public class TCPConnector extends Connector
 	}
 
 	@Override
-	public void send(final Packet packet) throws IOException
-	{
-		// TODO Auto-generated method stub
-		Thread worker1 = new Thread("Sending Thread")
+	public void send(Packet packet) {
+		try {
+			oStream.write(packet.getPacket());
+		} catch (IOException e) {
+			e.printStackTrace();
+			close();
+		}
+		catch(NullPointerException e)
 		{
-			public void run()
-			{
-				try
-				{
-					while (oStream == null)
-						;
-					oStream.write(packet.getPacket());
-				} catch (IOException e)
-				{
-					close();
-				}
-			}
-		};
-		worker1.start();
-
+			Log.e(TAG,"NullPointerException send");
+		}
 	}
 
 }

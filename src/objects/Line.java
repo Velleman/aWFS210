@@ -3,10 +3,10 @@ package objects;
 import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.glDrawArrays;
 import static be.velleman.wfs210.Constants.BYTES_PER_FLOAT;
-import be.velleman.wfs210.Constants;
-import android.graphics.Point;
-import data.VertexArray;
 import programs.ColorShaderProgram;
+import android.graphics.Point;
+import be.velleman.wfs210.Constants;
+import data.VertexArray;
 
 public class Line
 {

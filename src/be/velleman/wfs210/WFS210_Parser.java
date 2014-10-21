@@ -60,13 +60,12 @@ public class WFS210_Parser
 						.GetData(2)));
 				if (buffer.getSize() >= PacketSize)
 				{
-					byte[] packet = new byte[PacketSize];
+
 					foundPacket = new Packet(PacketSize);
 					for (int i = 0; i < PacketSize - 1; i++)
 					{
-						packet[i] = buffer.GetData(i);
+						foundPacket.setRawData(i,buffer.GetData(i));
 					}
-					foundPacket.setPacket(packet);
 
 					buffer.Discard(PacketSize);
 				}

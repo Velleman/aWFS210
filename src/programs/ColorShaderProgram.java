@@ -12,7 +12,6 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import android.content.Context;
-
 import be.velleman.wfs210.R;
 
 public class ColorShaderProgram extends ShaderProgram

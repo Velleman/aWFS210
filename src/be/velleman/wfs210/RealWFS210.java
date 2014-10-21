@@ -17,19 +17,16 @@ import be.velleman.wfs210.Trigger.TriggerSlope;
  * 
  */
 
-public class RealWFS210 extends WFS210 implements ConnectionListener
-{
+public class RealWFS210 extends WFS210 implements ConnectionListener {
 	private Map<String, String> wifiSettings = new HashMap<String, String>();
-	
+
 	@Override
-	public Trigger getTriggerSettings()
-	{
+	public Trigger getTriggerSettings() {
 		return triggerSettings;
 	}
 
 	@Override
-	public void setTriggerSettings(Trigger triggerSettings)
-	{
+	public void setTriggerSettings(Trigger triggerSettings) {
 		this.triggerSettings = triggerSettings;
 	}
 
@@ -41,8 +38,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 * @param mHandler
 	 *            The handler for sending message to the activity
 	 */
-	public RealWFS210(Connector connector)
-	{
+	public RealWFS210(Connector connector) {
 
 		channel1 = new Channel("CH1");
 		channel2 = new Channel("CH2");
@@ -58,10 +54,8 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 * filled it will try requesting it
 	 */
 	@Override
-	public Boolean sendSettings()
-	{
-		try
-		{
+	public Boolean sendSettings() {
+		try {
 			Packet SettingsPacket = new Packet(18);
 			SettingsPacket.setCommand(Commands.SEND_SCOPE_SETTINGS);
 			SettingsPacket.setData(2, channel1.getInputCoupling().ordinal());
@@ -72,17 +66,16 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			SettingsPacket.setData(7, channel2.getVerticalPosition());
 			SettingsPacket.setData(8, timeBase.ordinal());
 			SettingsPacket.setData(9, (byte) triggerSettings.getTriggerLevel());
-			SettingsPacket.setData(10, generateTriggerSettings(triggerSettings));
+			SettingsPacket
+					.setData(10, generateTriggerSettings(triggerSettings));
 			SettingsPacket.finalize();
 			connector.send(SettingsPacket);
 			return true;
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -95,17 +88,14 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 * @return Returns true if successful else false;
 	 */
 	@Override
-	public Boolean requestSettings()
-	{
+	public Boolean requestSettings() {
 		Packet requestSettings = new Packet(8);
 		requestSettings.setCommand(Commands.REQUEST_STATUS);
 		requestSettings.finalize();
 
-		try
-		{
+		try {
 			connector.send(requestSettings);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			return false;
 		}
@@ -117,25 +107,21 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 * 
 	 * @return Returns true if successful else false;
 	 */
-	public Boolean requestWifiSettings()
-	{
+	public Boolean requestWifiSettings() {
 		Packet requestSettings = new Packet(8);
 		requestSettings.setCommand(Commands.REQUEST_WIFI_SETTINGS);
 		requestSettings.finalize();
 
-		try
-		{
+		try {
 			connector.send(requestSettings);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			return false;
 		}
 		return true;
 	}
 
-	private Trigger AnalyzeTriggerData(byte data)
-	{
+	private Trigger AnalyzeTriggerData(byte data) {
 		Trigger newTriggerSettings = new Trigger();
 
 		byte triggerMode = 0;
@@ -147,8 +133,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		byte autoRange = 0;
 
 		triggerMode = (byte) (data & 3);
-		switch (triggerMode)
-		{
+		switch (triggerMode) {
 		case 0:
 			newTriggerSettings.setTrigger_Mode(TriggerMode.NORMAL);
 			break;
@@ -214,6 +199,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	static int i = 0;
 	private Boolean isCalibrating = false;
 	private byte previousstatus = 10;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -221,64 +207,56 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 * be.velleman.wfs210.packetListener#newPacket(be.velleman.wfs210.Packet)
 	 */
 	@Override
-	public void newPacketFound(Packet p)
-	{
+	public void newPacketFound(Packet p) {
 		// TODO Auto-generated method stub
-		//Log.i(TAG,Integer.toString(i));
-		//i++;
+		// Log.i(TAG,Integer.toString(i));
+		// i++;
 		Packet currentPacket = p;
-
 		if (currentPacket.getCommand() == Commands.RECEIVE_SCOPE_SETTINGS
-				.getValue())
-		{
+				.getValue()) {
 			channel1.clearSamples();
 			channel2.clearSamples();
 			channel1.setInputCoupling(InputCoupling.values()[currentPacket
 					.getData(2)]);
-			if (channel1.getInputCoupling() == InputCoupling.AC)
-			{
+			if (channel1.getInputCoupling() == InputCoupling.AC) {
 				settings.put("IC1", "AC");
 			}
-			if (channel1.getInputCoupling() == InputCoupling.DC)
-			{
+			if (channel1.getInputCoupling() == InputCoupling.DC) {
 				settings.put("IC1", "DC");
 			}
-			if (channel1.getInputCoupling() == InputCoupling.GND)
-			{
+			if (channel1.getInputCoupling() == InputCoupling.GND) {
 				settings.put("IC1", "GND");
 			}
 			channel1.setVerticalDiv(VoltageDiv.values()[currentPacket
 					.getData(3)]);
-			settings.put("VDIV1", getStringFromVDiv(channel1.getVerticalDiv(), channel1));
+			settings.put("VDIV1",
+					getStringFromVDiv(channel1.getVerticalDiv(), channel1));
 			channel1.setVerticalPosition(unsignedToBytes(currentPacket
 					.getData(4)));
-			settings.put("VPOS1", Integer.toString(channel1
-					.getVerticalPosition()));
+			settings.put("VPOS1",
+					Integer.toString(channel1.getVerticalPosition()));
 			channel2.setInputCoupling(InputCoupling.values()[currentPacket
 					.getData(5)]);
-			if (channel2.getInputCoupling() == InputCoupling.AC)
-			{
+			if (channel2.getInputCoupling() == InputCoupling.AC) {
 				settings.put("IC2", "AC");
 			}
-			if (channel2.getInputCoupling() == InputCoupling.DC)
-			{
+			if (channel2.getInputCoupling() == InputCoupling.DC) {
 				settings.put("IC2", "DC");
 			}
-			if (channel2.getInputCoupling() == InputCoupling.GND)
-			{
+			if (channel2.getInputCoupling() == InputCoupling.GND) {
 				settings.put("IC2", "GND");
 			}
 			channel2.setVerticalDiv(VoltageDiv.values()[currentPacket
 					.getData(6)]);
-			settings.put("VDIV2", getStringFromVDiv(channel2.getVerticalDiv(), channel2));
+			settings.put("VDIV2",
+					getStringFromVDiv(channel2.getVerticalDiv(), channel2));
 			channel2.setVerticalPosition(unsignedToBytes(currentPacket
 					.getData(7)));
 
-			settings.put("VPOS2", Integer.toString(channel2
-					.getVerticalPosition()));
+			settings.put("VPOS2",
+					Integer.toString(channel2.getVerticalPosition()));
 			timeBase = TimeBase.fromOrdinal(currentPacket.getData(8));
-			switch (timeBase.ordinal())
-			{
+			switch (timeBase.ordinal()) {
 			case 0:
 				settings.put("TIMEBASE", "1us");
 				break;
@@ -344,17 +322,14 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			triggerSettings = AnalyzeTriggerData(currentPacket.getData(10));
 			int triggerLevel = (unsignedToBytes(currentPacket.getData(9)));
 			triggerSettings.setTriggerLevel(triggerLevel);
-			settings.put("TRIGGERLEVEL", Integer
-					.toString(unsignedToBytes(currentPacket.getData(9))));
-			if (triggerSettings.getTrigger_Channel() == TriggerChannel.CH1)
-			{
+			settings.put("TRIGGERLEVEL",
+					Integer.toString(unsignedToBytes(currentPacket.getData(9))));
+			if (triggerSettings.getTrigger_Channel() == TriggerChannel.CH1) {
 				settings.put("TRIGGERCHANNEL", "CH1");
-			} else
-			{
+			} else {
 				settings.put("TRIGGERCHANNEL", "CH2");
 			}
-			switch (triggerSettings.getTrigger_Mode().ordinal())
-			{
+			switch (triggerSettings.getTrigger_Mode().ordinal()) {
 			case 0:
 				settings.put("TRIGGERMODE", "Normal");
 				break;
@@ -366,53 +341,47 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 				break;
 			}
 			if (triggerSettings.getTrigger_Slope().ordinal() == TriggerSlope.FALLING_EDGE
-					.ordinal())
-			{
+					.ordinal()) {
 				settings.put("TRIGGERSLOPE", "FALLING");
-			} else
-			{
+			} else {
 				settings.put("TRIGGERSLOPE", "RISING");
 			}
 			byte modulestatus = p.getData(11);
 			byte calibrating = (byte) (modulestatus >> 4);
 			calibrating = (byte) (calibrating & 0x01);
-			if (calibrating == 1)
-			{
-				if (!isCalibrating)
-				{
+			if (calibrating == 1) {
+				if (!isCalibrating) {
 					isCalibrating = true;
 
-					settings.put("CALIBRATING", isCalibrating ? "TRUE" : "FALSE");
+					settings.put("CALIBRATING", isCalibrating ? "TRUE"
+							: "FALSE");
 					notifyUpdatedSettings(settings);
 				}
 
-			} else
-			{
-				if (isCalibrating)
-				{
+			} else {
+				if (isCalibrating) {
 					isCalibrating = false;
-					settings.put("CALIBRATING", isCalibrating ? "TRUE" : "FALSE");
+					settings.put("CALIBRATING", isCalibrating ? "TRUE"
+							: "FALSE");
 					notifyUpdatedSettings(settings);
-				} else
-				{
+				} else {
 
 				}
 			}
-			settings.put("HOLD", triggerSettings.getRun_Hold() ? "TRUE" : "FALSE");
-			settings.put("AUTORANGE", triggerSettings.getAutorange() ? "TRUE" : "FALSE");
+			settings.put("HOLD", triggerSettings.getRun_Hold() ? "TRUE"
+					: "FALSE");
+			settings.put("AUTORANGE", triggerSettings.getAutorange() ? "TRUE"
+					: "FALSE");
 			notifyUpdatedSettings(settings);
 			if (!hasSettings)
 				hasSettings = true;
 		}
 
-		//samples
-		
+		// samples
+
 		if (currentPacket.getCommand() == Commands.RECEIVE_SAMPLES_FROM_SCOPE
-				.getValue())
-		{
+				.getValue()) {
 			int samplesSize = (1042 - 18) / 2;
-			byte[] sampleCH1 = new byte[samplesSize];
-			byte[] sampleCH2 = new byte[samplesSize];
 			byte offSetHigh, offSetLow;
 			int offSet;
 			offSetLow = currentPacket.getData(0);
@@ -421,7 +390,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			offSet /= 2;
 			int ch1Count = 0, ch2Count = 0;
 			int length = currentPacket.getSize();
-
+			int bufferSize = (length - 16) / 2;
 			triggerSettings.setTriggerLevel(unsignedToBytes(currentPacket
 					.getData(9)));
 			byte modulestatus = currentPacket.getData(11);
@@ -429,87 +398,72 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 			byte buf2 = (byte) (modulestatus & 32);
 
 			Boolean isChanged = false;
-			if (buf == 4 && previousstatus != 0)
-			{
+			if (buf == 4 && previousstatus != 0) {
 				settings.put("BATTERY", "CHARGING");
 				previousstatus = 0;
 				isChanged = true;
 			}
-			if (buf == 2 && previousstatus != 1)
-			{
+			if (buf == 2 && previousstatus != 1) {
 				settings.put("BATTERY", "FULL");
 				previousstatus = 1;
 				isChanged = true;
 			}
-			if (buf2 == 32 && previousstatus != 2)
-			{
+			if (buf2 == 32 && previousstatus != 2) {
 				settings.put("BATTERY", "LOW");
 				previousstatus = 2;
 				isChanged = true;
 			}
-			if (buf != 2 && buf != 4 && buf2 != 32 && previousstatus != 3)
-			{
+			if (buf != 2 && buf != 4 && buf2 != 32 && previousstatus != 3) {
 				settings.put("BATTERY", "NO");
 				previousstatus = 3;
 				isChanged = true;
 			}
-			if (isChanged)
-			{
+			if (isChanged) {
 				notifyUpdatedSettings(settings);
 				isChanged = false;
 			}
 			byte calibrating = (byte) (modulestatus >> 4);
 			calibrating = (byte) (calibrating & 0x01);
-			if (calibrating == 1)
-			{
-				if (!isCalibrating)
-				{
+			if (calibrating == 1) {
+				if (!isCalibrating) {
 					isCalibrating = true;
 
-					settings.put("CALIBRATING", isCalibrating ? "TRUE" : "FALSE");
+					settings.put("CALIBRATING", isCalibrating ? "TRUE"
+							: "FALSE");
 					notifyUpdatedSettings(settings);
 				}
 
-			} else
-			{
-				if (isCalibrating)
-				{
+			} else {
+				if (isCalibrating) {
 					isCalibrating = false;
-					settings.put("CALIBRATING", isCalibrating ? "TRUE" : "FALSE");
+					settings.put("CALIBRATING", isCalibrating ? "TRUE"
+							: "FALSE");
 					notifyUpdatedSettings(settings);
-				} else
-				{
+				} else {
 
 				}
 			}
 
-			for (int i = 12; i < length - 6; i++)
-			{
-				if (i % 2 != 0)
-				{
-
-					sampleCH2[ch2Count] = currentPacket.getData(i);
-
-					ch2Count++;
-				} else
-				{
-					sampleCH1[ch1Count] = currentPacket.getData(i);
-					ch1Count++;
+			int position = 12;
+			try {
+				for (int i = 0; i < bufferSize - 1; i++) {
+					channel1.getSamples()[i + offSet] = currentPacket
+							.getData(position);
+					position++;
+					channel2.getSamples()[i + offSet] = currentPacket
+							.getData(position);
+					position++;
 				}
-
+			} catch (Exception e) {
+				Log.i("set samples", "failed");
 			}
-
-			System.arraycopy(sampleCH1, 0, channel1.getSamples(), offSet, (length - 18) / 2);
-			System.arraycopy(sampleCH2, 0, channel2.getSamples(), offSet, (length - 18) / 2);
-			if (offSet == 2048)
-			{
+			if (offSet == 2048) {
 				channel1.isNewData = true;
 				channel2.isNewData = true;
 				isNewData = true;
 				newDataFrame();
 			}
-			if (isFakeData)
-			{
+			if (isFakeData) {
 				isFakeData = false;
 				requestSettings();
 			}
@@ -517,8 +471,7 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		}
 
 		if (currentPacket.getCommand() == Commands.RECEIVE_WIFI_SETTINGS
-				.getValue())
-		{
+				.getValue()) {
 			byte wifiChannelHigh, wifiChannelLow;
 			int wifiChannel;
 
@@ -544,50 +497,42 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 *         <code>false</code>
 	 */
 	@Override
-	public Boolean requestCalibrate()
-	{
+	public Boolean requestCalibrate() {
 		Packet requestSettings = new Packet(8);
 		requestSettings.setCommand(Commands.START_CALIBRATE_REQUEST);
 		requestSettings.finalize();
-		try
-		{
+		try {
 			connector.send(requestSettings);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public Boolean sendWifiSettings(String wifiName, String wifiChannel)
-	{
+	public Boolean sendWifiSettings(String wifiName, String wifiChannel) {
 
 		Packet WifiSettings = new Packet(74);
 		WifiSettings.setCommand(Commands.SEND_WIFI_SETTINGS);
 		WifiSettings.setData(2, 1);
 		char[] data = wifiName.toCharArray();
 		int i = 4;
-		for (char c : data)
-		{
+		for (char c : data) {
 			WifiSettings.setData(i, c);
 			i++;
 		}
 
 		data = " ".toCharArray();
 		i = 36;
-		for (char c : data)
-		{
+		for (char c : data) {
 			WifiSettings.setData(i, c);
 			i++;
 		}
 
 		WifiSettings.finalize();
-		try
-		{
+		try {
 			connector.send(WifiSettings);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			return false;
 		}
@@ -595,11 +540,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 
 	}
 
-	public String getWifiName(Packet p)
-	{
+	public String getWifiName(Packet p) {
 		byte[] wifiname = new byte[32];
-		for (int i = 0; i < 32; i++)
-		{
+		for (int i = 0; i < 32; i++) {
 			wifiname[i] = p.getData(i + 4);
 		}
 		String s = new String(wifiname);
@@ -607,11 +550,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		return s;
 	}
 
-	public String getWifiPassword(Packet p)
-	{
+	public String getWifiPassword(Packet p) {
 		byte[] wifiname = new byte[32];
-		for (int i = 0; i < 32; i++)
-		{
+		for (int i = 0; i < 32; i++) {
 			wifiname[i] = p.getData(i + 36);
 		}
 		String s = new String(wifiname);
@@ -619,11 +560,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		return s;
 	}
 
-	public String getScopeBuildNumber(Packet p)
-	{
+	public String getScopeBuildNumber(Packet p) {
 		byte[] wifiname = new byte[4];
-		for (int i = 0; i < 4; i++)
-		{
+		for (int i = 0; i < 4; i++) {
 			wifiname[i] = p.getData(i + 68);
 		}
 		String s = new String(wifiname);
@@ -631,11 +570,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 		return s;
 	}
 
-	public String getWifiBuildNumber(Packet p)
-	{
+	public String getWifiBuildNumber(Packet p) {
 		byte[] wifiname = new byte[16];
-		for (int i = 0; i < 16; i++)
-		{
+		for (int i = 0; i < 16; i++) {
 			wifiname[i] = p.getData(i + 72);
 		}
 		String s = new String(wifiname);
@@ -649,11 +586,9 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 *   
 	 */
 
-	public Commands getCommandByValue(int i)
-	{
+	public Commands getCommandByValue(int i) {
 		Commands command = null;
-		switch (i)
-		{
+		switch (i) {
 		case 32:
 			command = Commands.RECEIVE_SCOPE_SETTINGS;
 		default:
@@ -670,29 +605,25 @@ public class RealWFS210 extends WFS210 implements ConnectionListener
 	 *            the byte that needs to be converted
 	 * @return a byte that is unsigned
 	 */
-	private static int unsignedToBytes(byte b)
-	{
+	private static int unsignedToBytes(byte b) {
 		int result = b & 0xFF;
 		return result;
 	}
 
 	@Override
-	public void disconnected()
-	{
+	public void disconnected() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void connected()
-	{
+	public void connected() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	void generateFakeSignals()
-	{
+	void generateFakeSignals() {
 		// TODO Auto-generated method stub
 
 	}

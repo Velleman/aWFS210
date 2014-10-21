@@ -125,30 +125,6 @@ public class Channel
 
 	}
 
-	/**
-	 * This will retrieve data from this channel within a range
-	 * 
-	 * @param start
-	 *            the start position where the data needs to be taken
-	 * @param end
-	 *            the end positon where the data needs to be taken
-	 * @return Returns a byte array of length end-start
-	 */
-	public byte[] getSamplDataFromRange(int start, int end)
-	{
-		byte[] data;
-		if (end == 0 && start == 0)
-			data = new byte[1];
-		else
-			data = new byte[end - start];
-		int length = end - 1;
-		for (int i = start; i <= length; i++)
-		{
-			data[i - start] = this.samples[i];
-		}
-		return data;
-	}
-
 	public Boolean getIsX10()
 	{
 		return isX10;

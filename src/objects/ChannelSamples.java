@@ -3,10 +3,10 @@ package objects;
 import static android.opengl.GLES20.GL_LINE_STRIP;
 import static android.opengl.GLES20.glDrawArrays;
 import static be.velleman.wfs210.Constants.BYTES_PER_FLOAT;
+import programs.ColorShaderProgram;
 import be.velleman.wfs210.DeviceProperties;
 import be.velleman.wfs210.TimeBase;
 import be.velleman.wfs210.WFS210;
-import programs.ColorShaderProgram;
 import data.VertexArray;
 
 public class ChannelSamples

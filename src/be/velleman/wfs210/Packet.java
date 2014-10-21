@@ -56,6 +56,11 @@ public class Packet
 	{
 		return buffer;
 	}
+	
+	public void setRawData(int position, int data)
+	{
+		buffer[position] = (byte)data;
+	}
 
 	public Boolean setData(int position, int data)
 	{
@@ -64,16 +69,8 @@ public class Packet
 			return false;
 		} else
 		{
-			if ((position + 4) > (bufferSize - 2))
-			{
-				throw new IllegalArgumentException();
-
-			} else
-			{
-				buffer[position + 4] = (byte) data;
-				return true;
-			}
-
+			buffer[position + 4] = (byte)data;
+			return true;
 		}
 	}
 
@@ -86,7 +83,7 @@ public class Packet
 		{
 			if ((position + 4) > (bufferSize - 2))
 			{
-				throw new IllegalArgumentException();
+				return 0;
 
 			} else
 			{

@@ -1,54 +1,20 @@
 package be.velleman.wfs210;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
-
-import android.util.Log;
 
 public class OsciCalculator {
 	Boolean isRunning = false;
 	WFS210 scope;
 	MyGLRenderer renderer;
 	Timer timer;
-	float Vdc1 = 0;
-	float Vdc2 = 0;
-	float RMS1 = 0;
-
-	float RMS2 = 0;
-	float TRMS1 = 0;
-	float TRMS2 = 0;
-	float Vmax1 = 0;
-	float Vmax2 = 0;
-	float Vmin1 = 0;
-	float Vmin2 = 0;
-	float Vpkpk1 = 0;
-	float Vpkpk2 = 0;
-	float dbM1 = 0;
-	float dbM2 = 0;
-	float dbGain = 0;
-	float W1rms2 = 0;
-	float W1rms4 = 0;
-	float W1rms8 = 0;
-	float W1rms16 = 0;
-	float W1rms32 = 0;
-	float W2rms2 = 0;
-	float W2rms4 = 0;
-	float W2rms8 = 0;
-	float W2rms16 = 0;
-	float W2rms32 = 0;
-	float dV1 = 0;
-	float dV2 = 0;
-	float dt = 0;
-	float Freq = 0;
+	private float dt = 0;
 	Boolean validSignals = false;
-
+	private byte[] data;
 	public OsciCalculator(WFS210 scope, MyGLRenderer rend) {
 		this.scope = scope;
 		this.renderer = rend;
+		data = new byte[4096];
 	}
 
 	/**
@@ -70,7 +36,7 @@ public class OsciCalculator {
 	 */
 	public float calculateVdc(Channel ch) {
 		float Vdc = 0;
-		byte[] data = new byte[4096];
+		
 		System.arraycopy(ch.getSamples(), 0, data, 0, 4096);
 		for (int i = 0; i < 4096; i++) {
 			Vdc += (255 - unsignedToBytes(data[i]))
@@ -239,7 +205,6 @@ public class OsciCalculator {
 	 */
 	public void calculateTime(float x1, float x2) {
 		calculateDT(x1, x2);
-		Freq = 1 / dt;
 	}
 
 	/**

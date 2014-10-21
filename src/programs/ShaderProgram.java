@@ -10,7 +10,6 @@ package programs;
 
 import static android.opengl.GLES20.glUseProgram;
 import android.content.Context;
-
 import be.velleman.wfs210.util.ShaderHelper;
 import be.velleman.wfs210.util.TextResourceReader;
 

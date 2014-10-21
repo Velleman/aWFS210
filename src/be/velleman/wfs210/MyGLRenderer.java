@@ -33,7 +33,6 @@ import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import be.velleman.wfs210.Trigger.TriggerMode;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 

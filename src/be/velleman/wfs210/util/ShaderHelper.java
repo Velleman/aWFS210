@@ -26,9 +26,6 @@ import static android.opengl.GLES20.glGetShaderiv;
 import static android.opengl.GLES20.glLinkProgram;
 import static android.opengl.GLES20.glShaderSource;
 import static android.opengl.GLES20.glValidateProgram;
-
-import be.velleman.wfs210.util.LoggerConfig;
-
 import android.util.Log;
 
 public class ShaderHelper
