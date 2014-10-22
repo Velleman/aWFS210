@@ -41,16 +41,16 @@
     </string-array>
 	<string-array name="Measurements">
 	    <item>Vdc</item>
-        <item>Rms</item>
-        <item>TRms</item>
-        <item>Vptp</item>
-        <item>VMax</item>
+        <item>rms</item>
+        <item>Trms</item>
+        <item>Vpp</item>
+        <item>Vmax</item>
         <item>Vmin</item>
-        <item>W RMS2</item>
-        <item>W RMS4</item>
-        <item>W RMS8</item>
-        <item>W RMS16</item>
-        <item>W RMS32</item>
+        <item>Wrms2</item>
+        <item>Wrms4</item>
+        <item>Wrms8</item>
+        <item>Wrms16</item>
+        <item>Wrms32</item>
         <item>Dbm</item>
         <item>DbGain</item>
     </string-array>

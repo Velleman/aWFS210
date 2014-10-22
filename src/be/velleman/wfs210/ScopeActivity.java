@@ -1212,31 +1212,31 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 								+ calculator.getVpkpk(scope.channel1));
 						break;
 					case 4:
-						Measurement1.setText("VMax:\n"
+						Measurement1.setText("Vmax:\n"
 								+ calculator.getVmax(scope.channel1));
 						break;
 					case 5:
-						Measurement1.setText("VMin:\n"
+						Measurement1.setText("Vmin:\n"
 								+ calculator.getVmin(scope.channel1));
 						break;
 					case 6:
-						Measurement1.setText("rms 2W:\n"
+						Measurement1.setText("Wrms2:\n"
 								+ calculator.getWrms(scope.channel1, 2));
 						break;
 					case 7:
-						Measurement1.setText("rms 4W:\n"
+						Measurement1.setText("Wrms4:\n"
 								+ calculator.getWrms(scope.channel1, 4));
 						break;
 					case 8:
-						Measurement1.setText("rms 8W:\n"
+						Measurement1.setText("Wrms8:\n"
 								+ calculator.getWrms(scope.channel1, 8));
 						break;
 					case 9:
-						Measurement1.setText("rms 16W:\n"
+						Measurement1.setText("Wrms16:\n"
 								+ calculator.getWrms(scope.channel1, 16));
 						break;
 					case 10:
-						Measurement1.setText("rms 32W:\n"
+						Measurement1.setText("Wrms32:\n"
 								+ calculator.getWrms(scope.channel1, 32));
 						break;
 					case 11:
@@ -1306,31 +1306,31 @@ public class ScopeActivity extends Activity implements OnItemSelectedListener,
 								+ calculator.getVpkpk(scope.channel2));
 						break;
 					case 4:
-						Measurement2.setText("VMax:\n"
+						Measurement2.setText("Vmax:\n"
 								+ calculator.getVmax(scope.channel2));
 						break;
 					case 5:
-						Measurement2.setText("VMin:\n"
+						Measurement2.setText("Vmin:\n"
 								+ calculator.getVmin(scope.channel2));
 						break;
 					case 6:
-						Measurement2.setText("rms 2W:\n"
+						Measurement2.setText("Wrms2:\n"
 								+ calculator.getWrms(scope.channel2, 2));
 						break;
 					case 7:
-						Measurement2.setText("rms 4W:\n"
+						Measurement2.setText("Wrms4:\n"
 								+ calculator.getWrms(scope.channel2, 4));
 						break;
 					case 8:
-						Measurement2.setText("rms 8W:\n"
+						Measurement2.setText("Wrms8:\n"
 								+ calculator.getWrms(scope.channel2, 8));
 						break;
 					case 9:
-						Measurement2.setText("rms 16W:\n"
+						Measurement2.setText("Wrms16:\n"
 								+ calculator.getWrms(scope.channel2, 16));
 						break;
 					case 10:
-						Measurement2.setText("rms 32W:\n"
+						Measurement2.setText("Wrms32:\n"
 								+ calculator.getWrms(scope.channel2, 32));
 						break;
 					case 11:

@@ -23,10 +23,7 @@ public class OsciCalculator {
 	 * @return returns the formated string
 	 */
 	public static String fmt(float d) {
-		if (d == (int) d)
-			return String.format("%.2f", d);
-		else
-			return String.format("%.2f", d);
+		return EngineeringNotation.convert(d, 2);
 	}
 
 	/**
